@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>NB Clinic Dashboard</title>
+<style>
+/* Using system fonts - no external requests needed for file:// */
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; direction: rtl; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important; }
+body { background: #F5F0E8; color: #1a1a1a; font-size: 14px; padding: 1rem; }
+input, select, textarea, button { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important; }
+h1 { font-size: 18px; color: #96815f; margin-bottom: 14px; font-weight: 700; }
+.card { background: #fff; border: 1px solid #e0d8cc; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 12px; }
+.mc { background: #F5F0E8; border-radius: 8px; padding: 10px 13px; }
+.ml { font-size: 11px; color: #777; margin-bottom: 3px; font-weight: 600; }
+.mv { font-size: 19px; font-weight: 600; color: #1a1a1a; }
+.mv.g { color: #1a7a3a; } .mv.b { color: #c0392b; } .mv.w { color: #b5770d; }
+.ms { font-size: 10px; color: #999; margin-top: 2px; }
+.ph { font-size: 15px; font-weight: 700; color: #96815f; margin-bottom: 11px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.st { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; margin-top: 10px; }
+.dv { height: 1px; background: #e0d8cc; margin: .8rem 0; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.g2 > div > div:first-child, .g3 > div > div:first-child, .g4 > div > div:first-child { min-height: 28px; display: flex; align-items: flex-end; }
+.sr { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.sl { font-size: 12px; color: #555; width: 185px; text-align: right; flex-shrink: 0; line-height: 1.4; }
+.sv { font-size: 13px; font-weight: 600; width: 32px; text-align: left; flex-shrink: 0; }
+.sr input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 4px; cursor: pointer; background: #fff; border: 1px solid #e0d8cc; }
+.sr input[type=range]::-webkit-slider-runnable-track { background: transparent; height: 6px; border-radius: 4px; }
+.sr input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #baa893; border: 2px solid #fff; box-shadow: 0 0 0 1px #d4c9b8; margin-top: -5px; }
+.sr input[type=range]::-moz-range-track { background: transparent; height: 6px; border-radius: 4px; }
+.sr input[type=range]::-moz-range-progress { background: #baa893; border-radius: 4px; height: 6px; }
+.sr input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #baa893; border: 2px solid #fff; box-shadow: 0 0 0 1px #d4c9b8; }
+.nt { font-size: 12px; padding: 7px 11px; border-radius: 7px; margin-top: 8px; }
+.nt.ok { background: #e6f4eb; color: #1a7a3a; }
+.nt.wa { background: #fff8e1; color: #b5770d; }
+.nt.er { background: #fdecea; color: #c0392b; }
+.exempt-banner.wa { background: #fff8e1; color: #b5770d; border: 1.5px solid #f0d48a; }
+.exempt-banner.er { background: #fdecea; color: #c0392b; border: 1.5px solid #f0a8a0; }
+.hb { height: 8px; background: #e0d8cc; border-radius: 5px; overflow: hidden; margin-top: 3px; }
+.hf { height: 100%; border-radius: 5px; transition: width .3s, background .3s; }
+.br { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f0ebe3; color: #666; }
+.br:last-child { border-bottom: none; }
+.br span:last-child { font-weight: 600; color: #1a1a1a; }
+.cr { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid #f0ebe3; gap: 7px; }
+.cr:last-child { border-bottom: none; }
+.cn { font-size: 13px; color: #1a1a1a; width: 120px; flex-shrink: 0; }
+.cpb { flex: 1; height: 7px; background: #e0d8cc; border-radius: 4px; overflow: hidden; }
+.cpf { height: 100%; border-radius: 4px; transition: width .3s; }
+.cm { font-size: 11px; color: #888; width: 64px; text-align: center; flex-shrink: 0; }
+.ctag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; flex-shrink: 0; min-width: 46px; text-align: center; }
+.cbtns { display: flex; gap: 4px; flex-shrink: 0; }
+.cbtn { font-size: 11px; padding: 3px 8px; border-radius: 5px; cursor: pointer; border: 1px solid #d4c9b8; background: #F5F0E8; color: #baa893; font-weight: 600; }
+.cbtn:hover { background: #e8e0d0; }
+.cbtn.del { color: #c0392b; border-color: #f5c6c6; background: #fff5f5; }
+.tab-row { display: flex; gap: 0; border: 1px solid #d4c9b8; border-radius: 8px; overflow: hidden; margin-bottom: 13px; }
+.tb { font-size: 12px; padding: 6px 16px; cursor: pointer; border: none; border-inline-start: 1px solid #d4c9b8; background: #F5F0E8; color: #888; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.3; }
+.tb:first-child { border-inline-start: none; }
+.tb.a { background: #fff; color: #baa893; font-weight: 700; }
+.btn-primary { font-size: 12px; padding: 6px 16px; border-radius: 7px; cursor: pointer; border: none; background: #baa893; color: #fff; font-weight: 600; }
+.btn-sec { font-size: 12px; padding: 6px 12px; border-radius: 7px; cursor: pointer; border: 1px solid #d4c9b8; background: #fff; color: #666; }
+.add-form { background: #F5F0E8; border: 1px dashed #b9a792; border-radius: 10px; padding: 12px; margin-top: 10px; }
+.add-form.hidden { display: none; }
+.add-form h3 { font-size: 13px; color: #baa893; margin-bottom: 10px; font-weight: 700; }
+.form-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+.form-row label { font-size: 12px; color: #666; width: 80px; flex-shrink: 0; }
+.form-row input, .form-row select { font-size: 13px; padding: 5px 9px; border: 1px solid #d4c9b8; border-radius: 6px; background: #fff; flex: 1; min-width: 100px; }
+.cfr { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.cfm { width: 60px; font-size: 11px; color: #888; text-align: right; flex-shrink: 0; }
+.cfbb { flex: 1; height: 22px; background: #e0d8cc; border-radius: 4px; overflow: hidden; }
+.cfbf { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-right: 7px; transition: width .3s; }
+.cfbl { font-size: 10px; font-weight: 600; color: #fff; white-space: nowrap; }
+.cfn { width: 86px; font-size: 11px; color: #888; text-align: left; flex-shrink: 0; }
+.hr { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 11px; }
+.hl { width: 185px; color: #666; text-align: right; flex-shrink: 0; line-height: 1.3; }
+.hbb { flex: 1; height: 7px; background: #e0d8cc; border-radius: 4px; overflow: hidden; }
+.hbf { height: 100%; border-radius: 4px; transition: width .3s; }
+.hv { width: 85px; text-align: left; font-weight: 600; flex-shrink: 0; }
+.track-hdr { font-size: 12px; font-weight: 700; color: #baa893; margin-bottom: 4px; margin-top: 12px; padding-bottom: 3px; border-bottom: 1px solid #e0d8cc; }
+.split-info { font-size: 11px; color: #b9a792; margin-bottom: 8px; margin-right: 193px; }
+</style>
+</head>
+<body>
+<div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+  <div>
+    <h1 style="margin-bottom:2px;">לוח ניהול עסקי לקליניקה</h1>
+    <div style="font-size:13px;color:#888;font-weight:500;">נעם בר-אל עזריאל | דיאטנית קלינית B.Sc</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div id="current-period-badge" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#baa893;background:#F5F0E8;border:1px solid #d4c9b8;border-radius:6px;padding:6px 12px;">—</div>
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #d4c9b8;border-radius:8px;padding:8px 14px;">
+      <span style="font-size:12px;color:#888;">יעד נטו חודשי:</span>
+      <input type="number" id="tgt-input" value="20000" min="1000" step="500"
+        style="width:90px;font-size:15px;font-weight:700;color:#baa893;border:none;background:transparent;text-align:center;"
+        oninput="TGT=+this.value||20000;localStorage.setItem('nb_tgt',TGT);upd();">
+      <span style="font-size:12px;color:#888;">₪</span>
+    </div>
+  </div>
+</div>
+
+<div id="exempt-banner" style="display:none;border-radius:8px;padding:9px 16px;margin-bottom:12px;font-size:13px;font-weight:700;"></div>
+
+<div style="display:flex;gap:8px;margin-bottom:13px;">
+  <button class="tb a" onclick="showTab('clients',this)">לקוחות קיימות</button>
+  <button class="tb" onclick="showTab('sim',this)">מכירות והכנסות החודש</button>
+  <button class="tb" onclick="showTab('cf',this)">תזרים</button>
+  <button class="tb" onclick="showTab('exp',this)">הוצאות</button>
+  <button class="tb" onclick="showTab('summary',this)">סיכום חודשים</button>
+</div>
+
+<!-- ══════════ CLIENTS ══════════ -->
+<div id="tab-clients">
+  <div class="card">
+    <div class="ph">
+      <span>לקוחות פעילות</span>
+      <button class="btn-primary" onclick="toggleForm('add-form')">+ הוספת לקוחה</button>
+    </div>
+    <div class="add-form hidden" id="add-form">
+      <h3>הוספת לקוחה חדשה</h3>
+      <div class="form-row"><label>שם</label><input type="text" id="f-name" placeholder="שם מלא"></div>
+      <div class="form-row"><label>מסלול</label>
+        <select id="f-track">
+          <option value="preg">Pregnancy Glow Path</option>
+          <option value="rise">RISE path</option>
+          <option value="steady">STEADY path</option>
+          <option value="club">CheckMom CLUB</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>פגישות</label>
+        <input type="number" id="f-done" placeholder="הושלמו" min="0" max="20" style="max-width:90px;">
+        <span style="font-size:12px;color:#888;">מתוך</span>
+        <input type="number" id="f-total" placeholder="סה״כ" min="1" max="20" style="max-width:90px;">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn-primary" onclick="addClient()">הוספה</button>
+        <button class="btn-sec" onclick="toggleForm('add-form')">ביטול</button>
+      </div>
+      <div id="form-err" style="color:#c0392b;font-size:12px;margin-top:5px;"></div>
+    </div>
+
+    <div class="g3" style="margin:12px 0;">
+      <div class="mc"><div class="ml">סה"כ פעילות</div><div class="mv" id="stat-total">—</div></div>
+      <div class="mc"><div class="ml">שעות/חודש (בסיס)</div><div class="mv" id="ex-hw">—</div><div class="ms">יעד: עד 64 ש׳</div></div>
+      <div class="mc"><div class="ml">מסיימות בקרוב</div><div class="mv w" id="stat-ending">—</div><div class="ms">≤ 2 פגישות</div></div>
+    </div>
+    <div id="clients-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="ph"><span>עומס חודשי — בסיס קיים</span></div>
+    <div id="ex-hrows" style="margin-bottom:10px;"></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:3px;"><span>עומס חודשי</span><span id="ex-pl">—</span></div>
+    <div class="hb"><div class="hf" id="ex-bar" style="width:0%;background:#baa893;"></div></div>
+    <div id="ex-nt"></div>
+    <div class="g3" style="margin-top:10px;">
+      <div class="mc"><div class="ml">שעות/חודש</div><div class="mv" id="ex-total-h">—</div><div class="ms">יעד: עד 64 ש׳</div></div>
+      <div class="mc"><div class="ml">ממוצע שעות/יום</div><div class="mv" id="ex-daily-h">—</div><div class="ms">יעד 3–5 ש׳</div></div>
+      <div class="mc"><div class="ml">ניצול קיבולת</div><div class="mv" id="ex-util">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SIMULATOR ══════════ -->
+<div id="tab-sim" style="display:none;">
+  <div class="card">
+    <div class="ph">
+      <span>מכירות והכנסות החודש — לקוחות חדשות + מכירות דיגיטל</span>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sec" onclick="openPrices()">✏ מחירים</button>
+        <button class="btn-sec" onclick="resetSim()">איפוס</button>
+      </div>
+    </div>
+
+    <!-- ── ליווי אחת על אחת ── -->
+    <div class="st" style="margin-top:4px;">ליווי אחת על אחת</div>
+
+    <!-- PREGNANCY -->
+    <div class="track-hdr">Pregnancy Glow Path <span id="lbl-preg" style="font-weight:400;color:#b9a792;">(3,250 ₪)</span></div>
+    <div class="sr">
+      <div class="sl">סה"כ לקוחות חדשות</div>
+      <input type="range" min="0" max="8" value="1" id="sp-total" oninput="updatePayBreakdown('preg');upd()">
+      <div class="sv" id="vp-total">1</div>
+      <button onclick="toggleAccordion('acc-preg')" style="background:none;border:none;cursor:pointer;color:#b9a792;font-size:14px;padding:0 4px;" id="btn-acc-preg">▸</button>
+    </div>
+    <div id="acc-preg" style="display:none;background:#F5F0E8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+      <div style="font-size:11px;color:#888;margin-bottom:8px;">פירוט אופן תשלום — סה"כ <span id="preg-sum-check" style="font-weight:700;"></span></div>
+      <div id="preg-pay-rows"></div>
+    </div>
+    <div class="split-info" id="ppi"></div>
+
+    <!-- RISE -->
+    <div class="track-hdr">RISE path <span id="lbl-rise" style="font-weight:400;color:#b9a792;">(2,270 ₪)</span></div>
+    <div class="sr">
+      <div class="sl">סה"כ לקוחות חדשות</div>
+      <input type="range" min="0" max="8" value="2" id="sr-total" oninput="updatePayBreakdown('rise');upd()">
+      <div class="sv" id="vr-total">2</div>
+      <button onclick="toggleAccordion('acc-rise')" style="background:none;border:none;cursor:pointer;color:#b9a792;font-size:14px;padding:0 4px;" id="btn-acc-rise">▸</button>
+    </div>
+    <div id="acc-rise" style="display:none;background:#F5F0E8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+      <div style="font-size:11px;color:#888;margin-bottom:8px;">פירוט אופן תשלום — סה"כ <span id="rise-sum-check" style="font-weight:700;"></span></div>
+      <div id="rise-pay-rows"></div>
+    </div>
+    <div class="split-info" id="rpi"></div>
+
+    <!-- STEADY -->
+    <div class="track-hdr">STEADY path <span id="lbl-steady" style="font-weight:400;color:#b9a792;">(1,950 ₪)</span></div>
+    <div class="sr">
+      <div class="sl">סה"כ לקוחות חדשות</div>
+      <input type="range" min="0" max="10" value="2" id="sst-total" oninput="updatePayBreakdown('steady');upd()">
+      <div class="sv" id="vst-total">2</div>
+      <button onclick="toggleAccordion('acc-steady')" style="background:none;border:none;cursor:pointer;color:#b9a792;font-size:14px;padding:0 4px;" id="btn-acc-steady">▸</button>
+    </div>
+    <div id="acc-steady" style="display:none;background:#F5F0E8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+      <div style="font-size:11px;color:#888;margin-bottom:8px;">פירוט אופן תשלום — סה"כ <span id="steady-sum-check" style="font-weight:700;"></span></div>
+      <div id="steady-pay-rows"></div>
+    </div>
+    <div class="split-info" id="spi"></div>
+
+    <div class="dv"></div>
+
+    <!-- ── ליווי קבוצתי ── -->
+    <div class="st">ליווי קבוצתי — מעגל אמהות</div>
+    <div class="track-hdr">CheckMom CLUB <span id="lbl-club" style="font-weight:400;color:#b9a792;">(990 ₪ לאמא)</span></div>
+    <div class="sr"><div class="sl">אמהות בקבוצה</div><input type="range" min="0" max="10" value="6" id="scl" oninput="upd()"><div class="sv" id="vcl">6</div></div>
+
+    <div class="dv"></div>
+
+    <!-- ── פגישות בודדות ── -->
+    <div class="st">פגישות בודדות</div>
+    <div class="sr"><div class="sl" id="lbl-single">פגישה חד פעמית (450 ₪)</div><input type="range" min="0" max="20" value="0" id="ssingle" oninput="upd()"><div class="sv" id="vsingle">0</div></div>
+    <div class="sr"><div class="sl" id="lbl-followup">פגישת מעקב (300 ₪)</div><input type="range" min="0" max="15" value="0" id="smf" oninput="upd()"><div class="sv" id="vmf">0</div></div>
+
+    <div class="dv"></div>
+
+    <!-- ── מכירות דיגיטל ── -->
+    <div class="st">מכירות דיגיטל</div>
+    <div class="sr"><div class="sl" id="lbl-premium">תיק PREMIUM (547 ₪)</div><input type="range" min="0" max="20" value="0" id="spr" oninput="upd()"><div class="sv" id="vpr">0</div></div>
+    <div class="sr"><div class="sl" id="lbl-vip">תיק VIP (297 ₪)</div><input type="range" min="0" max="20" value="0" id="svi" oninput="upd()"><div class="sv" id="vvi">0</div></div>
+    <div class="sr"><div class="sl" id="lbl-basic">תיק BASIC (247 ₪)</div><input type="range" min="0" max="20" value="0" id="sba" oninput="upd()"><div class="sv" id="vba">0</div></div>
+    <div class="sr"><div class="sl" id="lbl-kitchen">Quick Check KITCHEN (59.90 ₪)</div><input type="range" min="0" max="30" value="0" id="skitchen" oninput="upd()"><div class="sv" id="vkitchen">0</div></div>
+    <div class="sr"><div class="sl" id="lbl-momrelief">MomRelief (39.90 ₪)</div><input type="range" min="0" max="30" value="0" id="smomrelief" oninput="upd()"><div class="sv" id="vmomrelief">0</div></div>
+    <div class="sr"><div class="sl">MomSafe — הורדות חינמי</div><input type="range" min="0" max="200" value="0" id="smomsafe" oninput="upd()"><div class="sv" id="vmomsafe">0</div></div>
+
+    <div class="dv"></div>
+
+    <!-- ── מוצרים/מסלולים מותאמים ── -->
+    <div class="st">פריטים מותאמים אישית</div>
+    <div id="custom-products-list"></div>
+    <button onclick="toggleForm('add-custom-product-form')" class="btn-sec" style="font-size:11px;margin-top:4px;">+ הוספת מוצר/מסלול</button>
+    <div class="add-form hidden" id="add-custom-product-form" style="margin-top:8px;">
+      <h3>מוצר / מסלול חדש</h3>
+      <div class="form-row"><label>שם</label><input type="text" id="cp-name" placeholder='למשל: "ייעוץ חד פעמי"'></div>
+      <div class="form-row"><label>מחיר (₪)</label><input type="number" id="cp-price" placeholder="0" min="0"></div>
+      <div class="form-row"><label>כמות מקס׳</label><input type="number" id="cp-max" value="10" min="1" max="50"></div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn-primary" onclick="addCustomProduct()">הוספה</button>
+        <button class="btn-sec" onclick="toggleForm('add-custom-product-form')">ביטול</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ph" style="cursor:pointer;" onclick="toggleCardSection('income-section',this)">
+      <span>תקבולים החודש</span>
+      <span id="income-section-arrow" style="color:#b9a792;font-size:14px;">▸</span>
+    </div>
+    <div id="income-section" style="display:none;">
+    <p style="font-size:11px;color:#888;margin-bottom:10px;">הנטו בפועל (אחרי הוצאות ומקדמות אמיתיות) מוצג בטאבים "הוצאות" ו"סיכום חודשים" — כאן רק ברוטו, מול הברוטו הנדרש כדי להגיע ליעד הנטו שלך.</p>
+    <div class="g4" style="margin-bottom:12px;">
+      <div class="mc"><div class="ml">ברוטו החודש</div><div class="mv" id="rg">—</div></div>
+      <div class="mc"><div class="ml">ברוטו נדרש ליעד</div><div class="mv" id="rn">—</div></div>
+      <div class="mc"><div class="ml">יעד נטו</div><div class="mv" id="tgt-display">20,000 ₪</div></div>
+      <div class="mc"><div class="ml">פער מהברוטו הנדרש</div><div class="mv" id="rt">—</div></div>
+    </div>
+    <div id="bk"></div>
+
+    <!-- פריטים ידניים -->
+    <div id="manual-items-list"></div>
+    <div style="margin-top:8px;">
+      <div id="manual-form-wrapper" style="display:none;background:#F5F0E8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;color:#baa893;margin-bottom:8px;">הוספת פריט ידני</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="mi-name" placeholder='תיאור (למשל: "הנחה RISE")' style="flex:1;min-width:150px;font-size:12px;padding:5px 9px;border:1px solid #d4c9b8;border-radius:6px;">
+          <input type="number" id="mi-amount" placeholder="סכום (שלילי = הנחה)" style="width:130px;font-size:12px;padding:5px 9px;border:1px solid #d4c9b8;border-radius:6px;">
+          <button class="btn-primary" onclick="addManualItem()" style="font-size:11px;padding:5px 12px;">הוספה</button>
+          <button class="btn-sec" onclick="document.getElementById('manual-form-wrapper').style.display='none'" style="font-size:11px;padding:5px 10px;">ביטול</button>
+        </div>
+      </div>
+      <button onclick="document.getElementById('manual-form-wrapper').style.display='block'" class="btn-sec" style="font-size:11px;padding:4px 10px;">+ פריט ידני / הנחה</button>
+    </div>
+
+    <div id="nsim" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ph" style="cursor:pointer;" onclick="toggleCardSection('load-section',this)">
+      <span>עומס חודשי כולל (קיים + חדש)</span>
+      <span id="load-section-arrow" style="color:#b9a792;font-size:14px;">▸</span>
+    </div>
+    <div id="load-section" style="display:none;">
+    <div id="shrows" style="margin-bottom:10px;"></div>
+    <div class="g3" style="margin-bottom:10px;">
+      <div class="mc"><div class="ml">שעות/חודש</div><div class="mv" id="sht">—</div><div class="ms">יעד: עד 64 ש׳</div></div>
+      <div class="mc"><div class="ml">ממוצע שעות/יום</div><div class="mv" id="shd">—</div><div class="ms">יעד 3–5 ש׳</div></div>
+      <div class="mc"><div class="ml">ניצול קיבולת</div><div class="mv" id="shu">—</div></div>
+    </div>
+    <div id="nhours"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CASHFLOW ══════════ -->
+<div id="tab-cf" style="display:none;">
+  <div class="card">
+    <div class="ph"><span>תזרים ל-6 חודשים קדימה</span></div>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;">חודש 1 = גיוס החודש. חודשים 2+ = תשלומים המשכיים בלבד מלקוחות מפוצלות.</p>
+    <div id="cfchart"></div>
+    <div class="g3" style="margin-top:12px;">
+      <div class="mc"><div class="ml">ברוטו חודש 1</div><div class="mv" id="cfm1">—</div></div>
+      <div class="mc"><div class="ml">ברוטו שיא</div><div class="mv" id="cfpk">—</div></div>
+      <div class="mc"><div class="ml">נטו שיא</div><div class="mv" id="cfpn">—</div></div>
+    </div>
+    <div id="cfnt" style="margin-top:9px;"></div>
+  </div>
+  <div class="card">
+    <div class="ph"><span>השוואה: תשלום מלא מול מפוצל</span></div>
+    <div id="compare"></div>
+  </div>
+</div>
+
+<!-- ══════════ EXPENSES ══════════ -->
+<div id="tab-exp" style="display:none;">
+  <div class="card">
+    <div class="ph">
+      <span>הוצאות קבועות חודשיות</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;color:#888;">
+        שער $ <input type="number" id="usd-rate" value="3.1" step="0.05" min="2" max="5" style="width:60px;font-size:13px;padding:3px 7px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;" oninput="updateRate(this.value)"> ₪
+      </span>
+      <button class="btn-primary" onclick="toggleForm('add-fixed-form')">+ הוספת הוצאה קבועה</button>
+    </div>
+    <div class="add-form hidden" id="add-fixed-form">
+      <h3>הוצאה קבועה חודשית חדשה</h3>
+      <div class="form-row"><label>שם</label><input type="text" id="ff-name" placeholder="למשל: ביטוח מקצועי"></div>
+      <div class="form-row"><label>סכום (₪)</label><input type="number" id="ff-amount" placeholder="0" min="0"></div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn-primary" onclick="addFixedCustom()">הוספה</button>
+        <button class="btn-sec" onclick="toggleForm('add-fixed-form')">ביטול</button>
+      </div>
+    </div>
+    <div id="fixed-exp-list"></div>
+
+  </div>
+
+  <div class="card">
+    <div class="ph"><span>הוצאות שנתיות</span>
+      <span style="display:flex;gap:6px;">
+        <button class="btn-sec" onclick="resetAnnualToDefaults()">↺ שחזור לברירת מחדל</button>
+        <button class="btn-primary" onclick="toggleForm('annual-form')">+ הוספת הוצאה שנתית</button>
+      </span>
+    </div>
+    <div class="add-form hidden" id="annual-form">
+      <h3>הוצאה שנתית חדשה</h3>
+      <div class="form-row"><label>שם</label><input type="text" id="af-name" placeholder="קנבה, דומיין..."></div>
+      <div class="form-row">
+        <label>סכום</label>
+        <input type="number" id="af-amount" placeholder="0" min="0" style="max-width:100px;">
+        <select id="af-currency" style="max-width:80px;"><option value="ils">₪</option><option value="usd">$</option></select>
+      </div>
+      <div class="form-row">
+        <label>חודש חידוש</label>
+        <select id="af-month">
+          <option value="">טרם נקבע</option>
+          <option value="1">ינואר</option><option value="2">פברואר</option><option value="3">מרץ</option>
+          <option value="4">אפריל</option><option value="5">מאי</option><option value="6">יוני</option>
+          <option value="7">יולי</option><option value="8">אוגוסט</option><option value="9">ספטמבר</option>
+          <option value="10">אוקטובר</option><option value="11">נובמבר</option><option value="12">דצמבר</option>
+        </select>
+      </div>
+      <div class="form-row"><label>תאריך מדויק</label><input type="date" id="af-date" style="max-width:160px;"></div>
+      <div class="form-row"><label>הערה</label><input type="text" id="af-note" placeholder="פרטים נוספים..."></div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn-primary" onclick="addAnnual()">הוספה</button>
+        <button class="btn-sec" onclick="toggleForm('annual-form')">ביטול</button>
+      </div>
+    </div>
+    <div id="annual-exp-list" style="margin-top:10px;"></div>
+    <div class="dv"></div>
+    <div class="st" style="margin-bottom:8px;">חודשים עם הוצאות שנתיות</div>
+    <div id="annual-calendar"></div>
+  </div>
+
+  <div class="card">
+    <div class="ph"><span>הוצאות חד פעמיות</span><button class="btn-primary" onclick="toggleForm('exp-form')">+ הוספת הוצאה</button></div>
+    <div class="add-form hidden" id="exp-form">
+      <h3>הוצאה חדשה</h3>
+      <div class="form-row"><label>תיאור</label><input type="text" id="ef-name" placeholder="פרסום, ציוד..."></div>
+      <div class="form-row"><label>סכום (₪)</label><input type="number" id="ef-amount" placeholder="0" min="0"></div>
+      <div class="form-row"><label>תאריך</label><input type="date" id="ef-date" style="max-width:160px;"></div>
+      
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn-primary" onclick="addExpense()">הוספה</button>
+        <button class="btn-sec" onclick="toggleForm('exp-form')">ביטול</button>
+      </div>
+    </div>
+    <div id="var-exp-list" style="margin-top:10px;"></div>
+    <div id="var-exp-empty" style="font-size:13px;color:#aaa;padding:8px 0;">אין הוצאות משתנות</div>
+  </div>
+
+  <div class="card">
+    <div class="ph"><span>עמלת סליקה GROW</span></div>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;">תשלום מלא (ביט/פייבוקס/העברה) = 1 ₪ לקבלה בלבד. חלוקה לתשלומים = עמלת סליקה + 1 ₪ לתשלום.</p>
+    <div class="g4" style="margin-bottom:10px;">
+      <div class="mc"><div class="ml">מדרגת עמלה</div><div class="mv" id="grow-rate">—</div><div class="ms">לפי מחזור חודשי</div></div>
+      <div class="mc"><div class="ml">עמלת סליקה (%)</div><div class="mv" id="grow-comm">—</div></div>
+      <div class="mc"><div class="ml">דמי קבלות (1 ₪)</div><div class="mv" id="grow-receipt">—</div></div>
+      <div class="mc"><div class="ml">סה"כ עמלת GROW</div><div class="mv b" id="grow-total">—</div></div>
+    </div>
+    <div id="grow-note" style="font-size:12px;color:#888;"></div>
+  </div>
+
+  <div class="card">
+    <div class="ph"><span>מקדמות מס בפועל</span></div>
+    <p style="font-size:11px;color:#888;margin-bottom:10px;">בניגוד לחישוב התיאורטי לפי קצב ההכנסה (שמופיע למטה כהערכה), אלו הסכומים שבאמת יוצאים מהחשבון כמקדמה חודשית, ומתקזזים עם פק"ש/בטל"א רק בסוף השנה.</p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <div class="form-row" style="margin-bottom:4px;"><label style="width:auto;white-space:nowrap;">מקדמת מס הכנסה</label><input type="number" id="adv-tax" min="0" step="50" oninput="updateAdvance('tax',this.value)" style="max-width:110px;"></div>
+        <div id="adv-tax-note" style="font-size:10px;color:#999;"></div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="form-row" style="margin-bottom:4px;"><label style="width:auto;white-space:nowrap;">מקדמת ביטוח לאומי</label><input type="number" id="adv-bl" min="0" step="50" oninput="updateAdvance('bl',this.value)" style="max-width:110px;"></div>
+        <div id="adv-bl-note" style="font-size:10px;color:#999;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#EDE5D8;border:1.5px solid #b9a792;border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:12px;">
+    <div style="font-size:15px;font-weight:700;color:#baa893;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      סיכום כולל — כל ההוצאות
+    </div>
+    <div class="g4">
+      <div style="background:rgba(92,48,16,0.07);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;font-weight:600;">הוצאות קבועות</div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a;" id="sum-fixed">—</div>
+      </div>
+      <div style="background:rgba(92,48,16,0.07);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;font-weight:600;" id="exp-tax-label">מסים ובטל"א</div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a;" id="exp-tax-total">—</div>
+        <div style="font-size:10px;color:#999;margin-top:2px;" id="exp-tax-breakdown"></div>
+      </div>
+      <div style="background:rgba(92,48,16,0.07);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;font-weight:600;">עמלת GROW + שנתיות + משתנות</div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a;" id="sum-other">—</div>
+      </div>
+      <div style="background:rgba(92,48,16,0.12);border-radius:8px;padding:10px 13px;border:1.5px solid #b9a792;">
+        <div style="font-size:11px;color:#baa893;margin-bottom:3px;font-weight:700;">סה"כ הוצאות חודשיות</div>
+        <div style="font-size:22px;font-weight:700;color:#c0392b;" id="exp-summary-total">—</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div style="background:rgba(92,48,16,0.07);border-radius:8px;padding:8px 14px;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:#888;margin-bottom:2px;">ברוטו נדרש ליעד</div>
+        <div style="font-size:16px;font-weight:700;color:#1a1a1a;" id="exp-required-gross">—</div>
+        <div style="font-size:10px;color:#999;" id="exp-required-gross-note">כדי להישאר עם היעד הנטו</div>
+      </div>
+      <div style="background:rgba(92,48,16,0.07);border-radius:8px;padding:8px 14px;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:#888;margin-bottom:2px;">נטו ביד בפועל (לפי תשלום מקדמה)</div>
+        <div style="font-size:16px;font-weight:700;color:#1a1a1a;" id="exp-summary-net">—</div>
+        <div style="font-size:10px;color:#999;">לא הערכה תיאורטית</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MONTHLY SUMMARY ══════════ -->
+<div id="tab-summary" style="display:none;">
+  <div class="card">
+    <div class="ph"><span>סיכום חודשים — הכנסות והוצאות</span></div>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;">החודש העסקי רץ מה-2 בכל חודש עד ה-2 בחודש שאחריו. בתום התקופה הנתונים נשמרים אוטומטית והדשבורד מתאפס לחודש הבא.<br>לחיצה על חודש מסוים תפתח את הפירוט המלא.</p>
+    <div id="summary-chart" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+  <div class="card" id="summary-detail-card" style="display:none;">
+    <div id="summary-detail"></div>
+  </div>
+  <div class="card">
+    <div class="ph" style="cursor:pointer;" onclick="toggleCardSection('exempt-section',this)">
+      <span>מעקב תקרת עוסק פטור</span>
+      <span id="exempt-section-arrow" style="color:#b9a792;font-size:14px;">▸</span>
+    </div>
+    <div id="exempt-section" style="display:none;">
+      <p style="font-size:11px;color:#888;margin-bottom:10px;">התקרה מתעדכנת מדי שנה ע"י רשות המסים — נכון לכתיבת הכלי היא כ-120,000 ₪. יש לבדוק ולעדכן כל שנה לפי ההודעה הרשמית.</p>
+      <div class="form-row"><label>תקרה שנתית</label><input type="number" id="exempt-ceiling-input" min="1000" step="1000" oninput="updateExemptCeiling(this.value)" style="max-width:120px;"></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin:10px 0 3px;"><span id="exempt-status-text">—</span></div>
+      <div class="hb"><div class="hf" id="exempt-bar" style="width:0%;background:#baa893;"></div></div>
+      <div id="exempt-note"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ph" style="cursor:pointer;" onclick="toggleCardSection('taxgap-section',this)">
+      <span>פערי מסים מצטברים לסוף שנה</span>
+      <span id="taxgap-section-arrow" style="color:#b9a792;font-size:14px;">▸</span>
+    </div>
+    <div id="taxgap-section" style="display:none;">
+      <p style="font-size:11px;color:#888;margin-bottom:10px;">ההפרש בין המקדמות ששולמו בפועל לבין ההערכה התיאורטית של החיוב, מצטבר מתחילת השנה הקלנדרית. זה קירוב לסכום שתצטרכי לשלם (או לקבל בחזרה) בהתקזזות הסופית.</p>
+      <div id="tax-gap-yearly"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ph" style="cursor:pointer;" onclick="toggleCardSection('reports-section',this)">
+      <span>דוחות לרו"ח</span>
+      <span id="reports-section-arrow" style="color:#b9a792;font-size:14px;">▸</span>
+    </div>
+    <div id="reports-section" style="display:none;">
+      <p style="font-size:11px;color:#888;margin-bottom:10px;">דוח PDF מסכם על פני כמה חודשים, לפי הצורך.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-sec" onclick="exportRangePDF(2)">📄 דו"ח דו-חודשי (2 חודשים אחרונים)</button>
+        <button class="btn-primary" onclick="exportRangePDF(12)">📄 דו"ח שנתי (השנה הקלנדרית)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Price Modal -->
+<div id="price-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:1.5rem;width:420px;max-width:95vw;box-shadow:0 8px 32px rgba(0,0,0,0.15);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:16px;font-weight:700;color:#baa893;">עריכת מחירים</div>
+      <button onclick="closePrices()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888;">×</button>
+    </div>
+    <div id="price-modal-body"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn-primary" onclick="savePrices_()">שמירה</button>
+      <button class="btn-sec" onclick="resetPrices_()">איפוס לברירת מחדל</button>
+    </div>
+  </div>
+</div>
+
+<div style="font-size:10px;color:#aaa;text-align:center;margin-top:8px;">
+  * מס לפי מדרגות 2024, עצמאית נשואה + ילד. יש לאמת מול רו"ח.<br>
+  © כל הזכויות שמורות לנעם בר-אל עזריאל
+</div>
+
+<script>
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 1: קבועים וגלובלים         ║
+// ╚══════════════════════════════════════╝
+let TGT = parseFloat(localStorage.getItem('nb_tgt'))||20000;
+const WORK_DAYS = 16; // 4 ימים × 4 שבועות
+const TARGET_H = 64;  // 4 ש׳/יום × 16
+const MAX_H = 80;     // 5 ש׳/יום × 16
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 2: מחירים                   ║
+// ╚══════════════════════════════════════╝
+const DP = {preg:3250,rise:2270,steady:1950,club:990,premium:547,vip:297,basic:247,kitchen:59.9,momrelief:39.9,momsafe:0,single:450,followup:300};
+function loadP(){try{const s=localStorage.getItem('nb_prices');if(s)return{...DP,...JSON.parse(s)};}catch(e){}return{...DP};}
+function saveP(p){try{localStorage.setItem('nb_prices',JSON.stringify(p));}catch(e){}}
+let P = loadP();
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 3: לקוחות                   ║
+// ╚══════════════════════════════════════╝
+const DEFAULT_CL = [
+  {id:1,n:'מיכל יצחקי',tr:'preg',d:7,t:8},
+  {id:2,n:'גל בדנני',tr:'rise',d:5,t:6},
+  {id:3,n:'יובל לב להמן',tr:'rise',d:4,t:6},
+  {id:4,n:'ליפז חורי',tr:'rise',d:4,t:6},
+  {id:5,n:'שחר ארגיל',tr:'rise',d:2,t:6},
+  {id:6,n:"נעמה קורצ'יק",tr:'rise',d:8,t:10},
+  {id:7,n:'ענת שניידרמן',tr:'rise',d:6,t:10},
+  {id:8,n:'שירה פאר',tr:'rise',d:8,t:10},
+  {id:9,n:'הילה חן',tr:'steady',d:3,t:6},
+  {id:10,n:'נעם אלסברג',tr:'steady',d:2,t:6}
+];
+const TC = {preg:'#F2A971',rise:'#8ECAE6',steady:'#95D5B2',club:'#8B2DC4'};
+const TN = {preg:'Pregnancy Glow Path',rise:'RISE path',steady:'STEADY path',club:'CheckMom CLUB'};
+const TOTALS = {preg:8,rise:6,steady:6,club:6};
+let nextId = 11;
+
+function loadCL(){try{const s=localStorage.getItem('nb_clients');if(s){const d=JSON.parse(s);nextId=d.nextId||11;return d.clients||DEFAULT_CL;}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_CL));}
+function saveCL(cl){try{localStorage.setItem('nb_clients',JSON.stringify({clients:cl,nextId}));}catch(e){}}
+let CL = loadCL();
+
+// ════ TAX ════
+function calcTax(ag){
+  const b=[[81480,.1],[116760,.14],[187440,.2],[260520,.31],[542160,.35],[698280,.47],[Infinity,.5]];
+  let t=0,p=0;
+  for(const[top,r]of b){if(ag<=p)break;t+=(Math.min(ag,top)-p)*r;p=top;}
+  return Math.round(Math.max(0,t-(2820+564+2820)*12)/12);
+}
+function calcBL(mg){
+  const a=mg*12,fl=6426*12,ce=49030*12;
+  let x=Math.min(a,fl)*0.0587;if(a>fl)x+=(Math.min(a,ce)-fl)*0.1723;
+  return Math.round(x/12);
+}
+function g2n(g){if(g<=0)return 0;return g-FIXED_TOTAL-calcTax(g*12)-calcBL(g);}
+// מוצאות את ההכנסה החודשית (ברוטו) שמתאימה לסכום מקדמה נתון, לפי נוסחאות המס/בטל"א
+function monthlyIncomeForTaxAdvance(target){
+  if(target<=0) return 0;
+  let lo=0, hi=3000000;
+  for(let i=0;i<50;i++){ const mid=(lo+hi)/2; if(calcTax(mid)<target) lo=mid; else hi=mid; }
+  return Math.round(hi/12);
+}
+function monthlyIncomeForBLAdvance(target){
+  if(target<=0) return 0;
+  let lo=0, hi=250000;
+  for(let i=0;i<50;i++){ const mid=(lo+hi)/2; if(calcBL(mid)<target) lo=mid; else hi=mid; }
+  return Math.round(hi);
+}
+function requiredGrossForTarget(target){
+  let lo=0, hi=500000;
+  for(let i=0;i<60;i++){
+    const mid=(lo+hi)/2;
+    if(g2n(mid)<target) lo=mid; else hi=mid;
+  }
+  return Math.round(hi);
+}
+let FIXED_TOTAL = 4462; // יתעדכן
+
+// ════ HELPERS ════
+function fmt(n){return Math.round(n).toLocaleString('he-IL')+' ₪';}
+function fh(n){return(Math.round(n*10)/10).toString();}
+function toggleForm(id){document.getElementById(id).classList.toggle('hidden');}
+
+// ════ CLIENTS RENDER ════
+function renderClients(){
+  const active = CL.filter(c=>c.d<c.t);
+  const ending = active.filter(c=>c.t-c.d<=2).length;
+  document.getElementById('stat-total').textContent = active.length;
+  document.getElementById('stat-ending').textContent = ending;
+
+  const tracks = ['preg','rise','steady','club'];
+  let html = '';
+  tracks.forEach(tr=>{
+    const group = CL.filter(c=>c.tr===tr);
+    if(!group.length) return;
+    html += `<div style="font-size:11px;font-weight:700;color:${TC[tr]};margin:8px 0 4px;text-transform:uppercase;letter-spacing:.05em;">${TN[tr]}</div>`;
+    group.forEach(c=>{
+      const rem=c.t-c.d, done=rem<=0, pct=Math.round(Math.min(c.d,c.t)/c.t*100), end=rem<=2&&!done;
+      html += `<div class="cr">
+        <div class="cn">${c.n}</div>
+        <div class="cpb"><div class="cpf" style="width:${pct}%;background:${done?'#1a7a3a':TC[tr]};"></div></div>
+        <div class="cm">${c.d}/${c.t}</div>
+        <span class="ctag" style="background:${done?'#e6f4eb':end?'#fff3cd':'#f0ebe3'};color:${done?'#1a7a3a':end?'#b5770d':'#888'};">${done?'סיימה ✓':rem+' נות׳'}</span>
+        <div class="cbtns">
+          ${!done?`<button class="cbtn" onclick="addSess(${c.id})">+1</button>`:''}
+          <button class="cbtn del" onclick="removeClient(${c.id})">✕</button>
+        </div>
+      </div>`;
+    });
+  });
+  document.getElementById('clients-list').innerHTML = html || '<div style="color:#aaa;font-size:13px;padding:8px 0;">אין לקוחות</div>';
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 4: שעות עבודה               ║
+// ╚══════════════════════════════════════╝
+// שעות = פגישות שנותרו × 1 שעה לפגישה
+// Pregnancy: פגישה כל 3 שבועות → max 1 פגישה/חודש
+// RISE: פגישה כל שבועיים → max 2 פגישות/חודש
+// STEADY: פגישה לחודש → max 1 פגישה/חודש
+// CLUB: 4 פגישות/חודש × 1.5ש + הכנה
+function clientHoursPerMonth(c){
+  const rem = c.t - c.d;
+  if(rem <= 0) return 0;
+  if(c.tr==='preg')   return Math.min(rem, 1) * 1.0;   // 1 פגישה/חודש
+  if(c.tr==='rise')   return Math.min(rem, 2) * 1.0;   // 2 פגישות/חודש
+  if(c.tr==='steady') return Math.min(rem, 1) * 1.0;   // 1 פגישה/חודש
+  if(c.tr==='club')   return Math.min(rem, 4) * 1.5;   // 4 פגישות × 1.5ש
+  return 0;
+}
+
+function exHoursMonthly(){
+  const active = CL.filter(c=>c.d<c.t);
+  let ph=0,rh=0,sh=0,clh=0;
+  active.forEach(c=>{
+    const h = clientHoursPerMonth(c);
+    if(c.tr==='preg')   ph += h;
+    else if(c.tr==='rise')   rh += h;
+    else if(c.tr==='steady') sh += h;
+    else if(c.tr==='club')   clh += h;
+  });
+  return {ph,rh,sh,clh,tot:ph+rh+sh+clh};
+}
+
+function renderExLoad(){
+  const h = exHoursMonthly();
+  const total = h.tot + 12; // 3ש/שבוע × 4 שבועות = 12ש ניהול עסקי
+  const pct = Math.min(100, Math.round(total/TARGET_H*100));
+  const pregC  = CL.filter(c=>c.tr==='preg'&&c.d<c.t).length;
+  const riseC  = CL.filter(c=>c.tr==='rise'&&c.d<c.t).length;
+  const steadyC= CL.filter(c=>c.tr==='steady'&&c.d<c.t).length;
+  const clubC  = CL.filter(c=>c.tr==='club'&&c.d<c.t).length;
+
+  const rows = [
+    [`Pregnancy קיימות (${pregC})`, h.ph, TC.preg],
+    [`RISE קיימות (${riseC})`, h.rh, TC.rise],
+    [`STEADY קיימות (${steadyC})`, h.sh, TC.steady],
+    [`CLUB קיימות (${clubC})`, h.clh, TC.club],
+    ['ניהול עסקי (3 ש׳/שבוע)', 12, '#9E9488'],
+  ].filter(x=>x[1]>0.01);
+
+  document.getElementById('ex-hrows').innerHTML='<div style="display:grid;grid-template-columns:1fr auto;gap:3px 14px;font-size:12px;">'+rows.map(([l,hm,col])=>`<span style="color:#666;">${l}</span><span style="font-weight:700;color:${col}">${fh(hm)} ש׳/חודש</span>`).join('')+'</div>';
+
+  document.getElementById('ex-hw').textContent = fh(total);
+  document.getElementById('ex-hw').className = 'mv '+(total>MAX_H?'b':total>TARGET_H?'w':'g');
+  const exTot=document.getElementById('ex-total-h');if(exTot)exTot.textContent=fh(total);
+  if(exTot)exTot.className='mv '+(total>MAX_H?'b':total>TARGET_H?'w':'g');
+  const exDay=document.getElementById('ex-daily-h');if(exDay){exDay.textContent=fh(total/WORK_DAYS);exDay.className='mv '+(total/WORK_DAYS>5?'b':total/WORK_DAYS>4?'w':'g');}
+  const exUtil=document.getElementById('ex-util');if(exUtil)exUtil.textContent=Math.round(total/TARGET_H*100)+'%';
+  document.getElementById('ex-pl').textContent = fh(total)+' / '+TARGET_H+' ש׳';
+  document.getElementById('ex-bar').style.width = pct+'%';
+  document.getElementById('ex-bar').style.background = total>MAX_H?'#c0392b':total>TARGET_H?'#e67e22':'#baa893';
+  const ending = CL.filter(c=>c.d<c.t&&c.t-c.d<=2).length;
+  document.getElementById('ex-nt').innerHTML = ending>0
+    ? `<div class="nt wa">💡 ${ending} לקוחות מסיימות בקרוב — מומלץ להתחיל לגייס</div>`
+    : total<20 ? '<div class="nt wa">יש מרווח לגיוס — עברי לסימולטור</div>'
+    : '<div class="nt ok">✓ עומס תקין מהבסיס הקיים</div>';
+}
+
+function addSess(id){const c=CL.find(x=>x.id===id);if(!c||c.d>=c.t)return;c.d++;saveCL(CL);renderClients();renderExLoad();upd();}
+function removeClient(id){if(!confirm('למחוק?'))return;CL=CL.filter(x=>x.id!==id);saveCL(CL);renderClients();renderExLoad();upd();}
+function addClient(){
+  const name=document.getElementById('f-name').value.trim();
+  const track=document.getElementById('f-track').value;
+  const done=parseInt(document.getElementById('f-done').value)||0;
+  const total=parseInt(document.getElementById('f-total').value)||TOTALS[track];
+  const err=document.getElementById('form-err');
+  if(!name){err.textContent='יש להזין שם';return;}
+  if(done>total){err.textContent='שגיאה בפגישות';return;}
+  CL.push({id:nextId++,n:name,tr:track,d:done,t:total});
+  saveCL(CL);
+  document.getElementById('f-name').value='';document.getElementById('f-done').value='';document.getElementById('f-total').value='';
+  err.textContent='';toggleForm('add-form');
+  renderClients();renderExLoad();upd();
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 5: תזרים                    ║
+// ╚══════════════════════════════════════╝
+function inflowFromState(m,cl,pr,vi,ba,kitchen,momrelief,mf){
+  let inc=0;
+  function trackIncome(payTotals,price){
+    if(m===1){
+      let x=payTotals.full*price;
+      payTotals.splits.forEach(s=>{ x+=s.count*(price/s.n); });
+      return x;
+    } else {
+      let x=0;
+      payTotals.splits.forEach(s=>{ if(m<=s.n) x+=s.count*(price/s.n); });
+      return x;
+    }
+  }
+  inc+=trackIncome(getPayTotals('preg'),P.preg);
+  inc+=trackIncome(getPayTotals('rise'),P.rise);
+  inc+=trackIncome(getPayTotals('steady'),P.steady);
+  if(m===1){
+    if(cl>0) inc+=cl*P.club;
+    inc+=pr*P.premium+vi*P.vip+ba*P.basic+kitchen*P.kitchen+momrelief*P.momrelief+mf*P.followup;
+    // single sessions and custom products added in upd() via ng
+  }
+  return Math.round(inc);
+}
+function inflow(m,pnf,pns,pp,rnf,rns,rp,stnf,stns,sp,cl,pr,vi,ba,kitchen,momrelief,mf){
+  return inflowFromState(m,cl,pr,vi,ba,kitchen,momrelief,mf);
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 6: סימולטור — upd()         ║
+// ╚══════════════════════════════════════╝
+let MANUAL_ITEMS = loadManual();
+let manualNextId = MANUAL_ITEMS.length?Math.max(...MANUAL_ITEMS.map(e=>e.id))+1:1;
+
+// payState[track][numPayments] = count
+let payState = {
+  preg:   {1:1,2:0,3:0,4:0},
+  rise:   {1:2,2:0,3:0},
+  steady: {1:2,2:0,3:0}
+};
+
+// ════ שמירת מצב הסימולטור (מכירות החודש) — בלי זה כל רענון מאפס את הסליידרים ════
+function loadSimState(){try{const s=localStorage.getItem('nb_sim_state');if(s)return JSON.parse(s);}catch(e){}return null;}
+// ממלא את הסליידרים בצבע חום עד לנקודה הנוכחית (כרום/אדג' לא מציירים את זה אוטומטית כמו פיירפוקס)
+function refreshRangeFills(){
+  document.querySelectorAll('.sr input[type=range]').forEach(el=>{
+    const min=+el.min||0, max=+el.max||100, val=+el.value||0;
+    const pct = max>min ? Math.max(0,Math.min(100,Math.round((val-min)/(max-min)*100))) : 0;
+    el.style.background = `linear-gradient(to left, #baa893 ${pct}%, #fff ${pct}%)`;
+  });
+}
+function saveSimState(){
+  try{
+    const setIfNum=(id)=>{const el=document.getElementById(id);return el?+el.value:undefined;};
+    const state={
+      spTotal:setIfNum('sp-total'), srTotal:setIfNum('sr-total'), sstTotal:setIfNum('sst-total'),
+      payState:payState,
+      scl:setIfNum('scl'), spr:setIfNum('spr'), svi:setIfNum('svi'), sba:setIfNum('sba'),
+      skitchen:setIfNum('skitchen'), smomrelief:setIfNum('smomrelief'), smomsafe:setIfNum('smomsafe'),
+      smf:setIfNum('smf'), ssingle:setIfNum('ssingle'),
+      cp:CUSTOM_PRODUCTS.reduce((o,e)=>{const v=setIfNum('scp-'+e.id);if(v!==undefined)o[e.id]=v;return o;},{})
+    };
+    localStorage.setItem('nb_sim_state',JSON.stringify(state));
+  }catch(e){}
+}
+function applySimState(){
+  const s=loadSimState();
+  if(!s)return;
+  const setVal=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};
+  setVal('sp-total',s.spTotal); setVal('sr-total',s.srTotal); setVal('sst-total',s.sstTotal);
+  setVal('scl',s.scl); setVal('spr',s.spr); setVal('svi',s.svi); setVal('sba',s.sba);
+  setVal('skitchen',s.skitchen); setVal('smomrelief',s.smomrelief); setVal('smomsafe',s.smomsafe);
+  setVal('smf',s.smf); setVal('ssingle',s.ssingle);
+  if(s.payState) payState=s.payState;
+  if(s.cp){ CUSTOM_PRODUCTS.forEach(e=>{ if(s.cp[e.id]!==undefined) setVal('scp-'+e.id, s.cp[e.id]); }); }
+}
+
+function upd(){
+  try{
+  const disabledFixed=loadDisabled('nb_dis_fixed');
+  FIXED_TOTAL = getFixed().filter(e=>!disabledFixed.includes(e.name)).reduce((s,e)=>s+e.amount,0);
+  const cl  = +document.getElementById('scl').value;
+  // Read from payState (accordion)
+  const pregPay = getPayTotals('preg');
+  const risePay = getPayTotals('rise');
+  const steadyPay = getPayTotals('steady');
+  // For backward compat with revenue/hours calc
+  const pnf = pregPay.full;
+  const pns = pregPay.splits.reduce((s,x)=>s+x.count,0);
+  const pp  = pregPay.splits.length>0 ? pregPay.splits[0].n : 1;
+  const rnf = risePay.full;
+  const rns = risePay.splits.reduce((s,x)=>s+x.count,0);
+  const rp  = risePay.splits.length>0 ? risePay.splits[0].n : 1;
+  const stnf= steadyPay.full;
+  const stns= steadyPay.splits.reduce((s,x)=>s+x.count,0);
+  const sp  = steadyPay.splits.length>0 ? steadyPay.splits[0].n : 1;
+  const pr  = +document.getElementById('spr').value;
+  const vi  = +document.getElementById('svi').value;
+  const ba  = +document.getElementById('sba').value;
+  const kitchen   = +document.getElementById('skitchen').value;
+  const momrelief = +document.getElementById('smomrelief').value;
+  const mf     = +document.getElementById('smf').value;
+  const single = +(document.getElementById('ssingle')?.value||0);
+  const cpTotal = CUSTOM_PRODUCTS.reduce((s,e)=>{
+    const v=+(document.getElementById('scp-'+e.id)?.value||0);
+    return s+v*e.price;
+  },0);
+  const momsafe = +document.getElementById('smomsafe').value;
+
+  // תוויות
+  // Update accordion display
+  ['preg','rise','steady'].forEach(tr=>renderPayRows(tr));
+  document.getElementById('vcl').textContent=cl;
+  document.getElementById('vpr').textContent=pr;
+  document.getElementById('vvi').textContent=vi;
+  document.getElementById('vba').textContent=ba;
+  document.getElementById('vkitchen').textContent=kitchen;
+  document.getElementById('vmomrelief').textContent=momrelief;
+  document.getElementById('vmomsafe').textContent=momsafe;
+  document.getElementById('vmf').textContent=mf;
+  const sv=document.getElementById('vsingle');if(sv)sv.textContent=single;
+
+  // split info shown inside accordion
+
+  document.getElementById('lbl-preg').textContent='('+P.preg.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-rise').textContent='('+P.rise.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-steady').textContent='('+P.steady.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-club').textContent='('+P.club.toLocaleString('he-IL')+' ₪ לאמא)';
+  document.getElementById('lbl-premium').textContent='תיק PREMIUM ('+P.premium.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-vip').textContent='תיק VIP ('+P.vip.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-basic').textContent='תיק BASIC ('+P.basic.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-kitchen').textContent='Quick Check KITCHEN ('+P.kitchen.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-momrelief').textContent='MomRelief ('+P.momrelief.toLocaleString('he-IL')+' ₪)';
+  document.getElementById('lbl-followup').textContent='פגישות מעקב ('+P.followup.toLocaleString('he-IL')+' ₪)';
+  const sel=document.getElementById('lbl-single');if(sel)sel.textContent='פגישה חד פעמית ('+P.single.toLocaleString('he-IL')+' ₪)';
+
+  // הכנסה חודש 1
+  const manualTotal=MANUAL_ITEMS.reduce((s,e)=>s+e.amount,0);
+  const ng = inflowFromState(1,cl,pr,vi,ba,kitchen,momrelief,mf)+single*P.single+cpTotal+manualTotal;
+  const reqGross = requiredGrossForTarget(TGT);
+  const grossGap = ng-reqGross;
+  const tdEl=document.getElementById("tgt-display");if(tdEl)tdEl.textContent=fmt(TGT);
+
+  document.getElementById('rg').textContent=fmt(ng);
+  const nel=document.getElementById('rn');nel.textContent=fmt(reqGross);nel.className='mv';
+  const gel=document.getElementById('rt');gel.textContent=(grossGap>=0?'+':'')+Math.round(grossGap).toLocaleString('he-IL')+' ₪';gel.className='mv '+(grossGap>=0?'g':'b');
+
+  // Build breakdown per track using payState
+  function trackBreakdown(tr, price, label){
+    const pt=getPayTotals(tr);
+    const rows=[];
+    if(pt.full>0) rows.push([label+' מלא ('+pt.full+')',pt.full*price]);
+    pt.splits.forEach(s=>{if(s.count>0)rows.push([label+' מפוצל '+s.count+'×'+s.n+' תשלומים',s.count*(price/s.n)]);});
+    return rows;
+  }
+  const items=[
+    ...trackBreakdown('preg',P.preg,'Pregnancy'),
+    ...trackBreakdown('rise',P.rise,'RISE'),
+    ...trackBreakdown('steady',P.steady,'STEADY'),
+    ['CLUB ('+cl+' אמהות)',cl>0?cl*P.club:0],
+    ['PREMIUM ('+pr+')',pr*P.premium],
+    ['VIP ('+vi+')',vi*P.vip],
+    ['BASIC ('+ba+')',ba*P.basic],
+    ['Quick Check KITCHEN ('+kitchen+')',kitchen*P.kitchen],
+    ['MomRelief ('+momrelief+')',momrelief*P.momrelief],
+    ['MomSafe ('+momsafe+' הורדות)',0],
+    ['פגישה חד פעמית ('+single+')',single*P.single],
+    ['פגישות מעקב ('+mf+')',mf*P.followup],
+    ...CUSTOM_PRODUCTS.map(e=>[e.name+' ('+(+(document.getElementById('scp-'+e.id)?.value||0))+')',(+(document.getElementById('scp-'+e.id)?.value||0))*e.price]),
+  ].filter(x=>x[1]>0);
+  // Manual items rendered separately below
+  document.getElementById('bk').innerHTML=items.map(([l,v])=>'<div class="br"><span>'+l+'</span><span>'+fmt(v)+'</span></div>').join('');
+  document.getElementById('manual-items-list').innerHTML=MANUAL_ITEMS.map(e=>{
+    const col=e.amount<0?'color:#c0392b':'color:#1a7a3a';
+    return `<div class="br">
+      <span style="color:#888;">${e.name}</span>
+      <span style="display:flex;align-items:center;gap:7px;">
+        <span style="${col};font-weight:600;">${e.amount>=0?'+':''}${Math.round(e.amount).toLocaleString('he-IL')} ₪</span>
+        <button onclick="removeManualItem(${e.id})" class="cbtn del" style="font-size:10px;padding:1px 5px;">✕</button>
+      </span>
+    </div>`;
+  }).join('');
+  document.getElementById('nsim').innerHTML=grossGap>=0?'<div class="nt ok">✓ מגיעה לברוטו הנדרש ליעד!</div>':'<div class="nt wa">חסר עוד '+fmt(-grossGap)+' ברוטו ליעד</div>';
+
+  // עומס שעות
+  const eh = exHoursMonthly();
+  // שעות לקוחות חדשות:
+  // Pregnancy חדשה חודש 1: פג׳ ראשונה 1.5ש + שעת תפריט + פג׳ שנייה 1ש = 3.5ש
+  // RISE חדשה חודש 1: אותו דבר = 3.5ש
+  // STEADY חדשה: 1.5ש + 1ש תפריט = 2.5ש
+  // CLUB חדשה: 4×1.5ש מפגשים + 0.5ש×מספר אמהות הכנה
+  const hpn  = (pnf+pns) * 3.5;
+  const hrn  = (rnf+rns) * 3.5;
+  const hstn = (stnf+stns) * 2.5;
+  const hcl  = cl>0 ? (4*1.5 + cl*0.5) : 0;
+  const hpr  = pr * 0.5;
+  const totH = eh.ph+eh.rh+eh.sh+eh.clh+hpn+hrn+hstn+hcl+hpr+12;
+  const dailyAvg = totH/WORK_DAYS;
+  const pctH = Math.min(100,Math.round(totH/TARGET_H*100));
+
+  const hrs=[
+    ['Pregnancy קיימות',eh.ph,TC.preg],
+    ['Pregnancy חדשות ('+(pnf+pns)+') — פג׳+תפריט+פג׳',hpn,'#e8922d'],
+    ['RISE קיימות',eh.rh,TC.rise],
+    ['RISE חדשות ('+(rnf+rns)+') — פג׳+תפריט+פג׳',hrn,'#7da8f0'],
+    ['STEADY ('+(stnf+stns)+' חדשות + '+CL.filter(c=>c.tr==='steady'&&c.d<c.t).length+' קיימות)',hstn+eh.sh,TC.steady],
+    ['CLUB ('+cl+' אמהות) — מפגשים+הכנה',hcl,TC.club],
+    ['PREMIUM הכנה ('+pr+')',hpr,'#b9a792'],
+    ['ניהול עסקי',12,'#9E9488'],
+  ].filter(x=>x[1]>0.02);
+
+  document.getElementById('shrows').innerHTML='<div style="display:grid;grid-template-columns:1fr auto;gap:3px 14px;font-size:12px;">'+hrs.map(([l,hm,col])=>`<span style="color:#666;">${l}</span><span style="font-weight:700;color:${col}">${fh(hm)} ש׳</span>`).join('')+'</div>';
+  document.getElementById('sht').textContent=fh(totH);
+  document.getElementById('sht').className='mv '+(totH>MAX_H?'b':totH>TARGET_H?'w':'g');
+  document.getElementById('shd').textContent=fh(dailyAvg);
+  document.getElementById('shd').className='mv '+(dailyAvg>5?'b':dailyAvg>4?'w':'g');
+  const shuEl=document.getElementById('shu');if(shuEl)shuEl.textContent=Math.round(totH/TARGET_H*100)+'%';
+  const shbar=document.getElementById('shbar');if(shbar){shbar.style.width=pctH+'%';shbar.style.background=totH>MAX_H?'#c0392b':totH>TARGET_H?'#e67e22':'#baa893';}
+  const shpl=document.getElementById('shpl');if(shpl)shpl.textContent=fh(totH)+' / '+TARGET_H+' ש׳/חודש';
+  document.getElementById('nhours').innerHTML=totH>MAX_H
+    ?'<div class="nt er">⚠ חורגת מהמגבלה</div>'
+    :totH>TARGET_H?'<div class="nt wa">עומס גבוה — מעל 4 ש׳/יום</div>'
+    :'<div class="nt ok">✓ עומס תקין — '+fh(dailyAvg)+' ש׳/יום בממוצע</div>';
+
+  // תזרים
+  const cgTrackOnly0=inflow(1,pnf,pns,pp,rnf,rns,rp,stnf,stns,sp,cl,pr,vi,ba,kitchen,momrelief,mf);
+  const cg=[1,2,3,4,5,6].map(m=>inflow(m,pnf,pns,pp,rnf,rns,rp,stnf,stns,sp,cl,pr,vi,ba,kitchen,momrelief,mf));
+  cg[0]=computeMonthlyIncomeBreakdown().total; // חודש 1 = כל ההכנסה האמיתית (כולל פגישות בודדות/מוצרים/פריטים ידניים), לא רק לקוחות חדשות
+  const realExpBase=(()=>{const e=computeMonthlyExpenseBreakdown();return e.fixed.total+e.tax.total+e.annual.total+e.variable.total;})();
+  const g2nReal=(g)=>g<=0?0:g-realExpBase-calcGrowFee(g,typeof payState!=='undefined'?payState:{}).total;
+  const cn=cg.map(g=>g2nReal(g));
+  const pk=Math.max(...cg),pn2=Math.max(...cn),mx=Math.max(...cg,1);
+  const mtt=cn.findIndex(n=>n>=TGT);
+  document.getElementById('cfm1').textContent=fmt(cg[0]);
+  document.getElementById('cfpk').textContent=fmt(pk);
+  const pnel=document.getElementById('cfpn');pnel.textContent=fmt(pn2);pnel.className='mv '+(pn2>=TGT?'g':'b');
+  const mns=['חודש 1','חודש 2','חודש 3','חודש 4','חודש 5','חודש 6'];
+  document.getElementById('cfchart').innerHTML=cg.map((g,i)=>{
+    const n=cn[i],p=Math.round(g/mx*100),col='#baa893';
+    return `<div class="cfr"><div class="cfm">${mns[i]}</div><div class="cfbb"><div class="cfbf" style="width:${p}%;background:${col};"><span class="cfbl">${fmt(g)}</span></div></div><div class="cfn">נטו: ${fmt(n)}</div></div>`;
+  }).join('');
+  document.getElementById('cfnt').innerHTML=pn2>=TGT
+    ?`<div class="nt ok">✓ מגיעה ליעד החל מחודש ${mtt+1}</div>`
+    :'<div class="nt wa">לא מגיעה ליעד — הגדילי גיוס</div>';
+
+  const fullM1=(pnf+pns)*P.preg+(rnf+rns)*P.rise+(stnf+stns)*P.steady+(cl>0?cl*P.club:0)+pr*P.premium+vi*P.vip+ba*P.basic+kitchen*P.kitchen+momrelief*P.momrelief+mf*P.followup;
+  const hasSplit=pns>0||rns>0||stns>0;
+  const cfGap=fullM1-cgTrackOnly0;
+  document.getElementById('compare').innerHTML=hasSplit?`
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex:1;min-width:140px;">
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">תשלום מלא מראש</div>
+        <div style="font-size:22px;font-weight:700;color:#baa893;">${fmt(fullM1)}</div>
+        <div style="font-size:11px;color:#888;">נטו: ${fmt(g2nReal(fullM1))}</div>
+      </div>
+      <div style="font-size:22px;color:#d4c9b8;padding-top:6px;">←</div>
+      <div style="flex:1;min-width:140px;">
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">עם פיצול תשלומים</div>
+        <div style="font-size:22px;font-weight:700;color:#b5770d;">${fmt(cgTrackOnly0)}</div>
+        <div style="font-size:11px;color:#888;">חודש 1 | נטו: ${fmt(g2nReal(cgTrackOnly0))}</div>
+      </div>
+    </div>
+    <div class="nt ${cfGap>0?'wa':'ok'}" style="margin-top:10px;">${cfGap>0?'פיצול עולה לך '+fmt(cfGap)+' בחודש 1 — אבל מקל על הלקוחה':'תשלום מלא ופיצול זהים'}</div>`
+    :'<div style="font-size:13px;color:#888;padding:8px 0;">הוסיפי לקוחות מפוצלות כדי לראות השוואה</div>';
+
+  // עדכון הוצאות אם הלשונית פתוחה
+  if(document.getElementById('tab-exp').style.display!=='none') renderExpenses();
+  renderExemptStatus();
+  renderCurrentPeriodBadge();
+  refreshRangeFills();
+  saveSimState();
+  }catch(err){console.error('upd() crashed:',err.message,'\n',err.stack);}
+}
+
+function resetSim(){
+  MANUAL_ITEMS=[];saveManual(MANUAL_ITEMS);
+  payState = {preg:{1:0,2:0,3:0,4:0},rise:{1:0,2:0,3:0},steady:{1:0,2:0,3:0}};
+  document.getElementById('sp-total').value=0;
+  document.getElementById('sr-total').value=0;
+  document.getElementById('sst-total').value=0;
+  document.getElementById('vp-total').textContent='0';
+  document.getElementById('vr-total').textContent='0';
+  document.getElementById('vst-total').textContent='0';
+  ['scl','spr','svi','sba','skitchen','smomrelief','smomsafe','smf','ssingle'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=0;
+  });
+  CUSTOM_PRODUCTS.forEach(e=>{
+    const el=document.getElementById('scp-'+e.id);if(el)el.value=0;
+    const v=document.getElementById('vcp-'+e.id);if(v)v.textContent='0';
+  });
+  upd();
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 7: הוצאות                   ║
+// ╚══════════════════════════════════════╝
+let USD_RATE = parseFloat(localStorage.getItem('nb_usd_rate'))||3.1;
+
+// מקדמות מס בפועל (לא ההערכה התיאורטית) — מה שבאמת יוצא מהחשבון
+function loadAdvance(key,def){const v=localStorage.getItem('nb_advance_'+key);return v!==null&&v!==''?parseFloat(v):def;}
+let ADV_TAX = loadAdvance('tax',0);
+let ADV_BL  = loadAdvance('bl',762);
+function updateAdvance(key,v){
+  const n=Math.max(0,parseFloat(v)||0);
+  if(key==='tax')ADV_TAX=n; else ADV_BL=n;
+  localStorage.setItem('nb_advance_'+key,n);
+  renderExpenses();
+}
+function renderAdvanceNotes(){
+  const taxNote=document.getElementById('adv-tax-note');
+  if(taxNote) taxNote.textContent = ADV_TAX>0 ? 'מתאים להכנסה חודשית (ברוטו) של כ-'+fmt(monthlyIncomeForTaxAdvance(ADV_TAX)) : 'אין מקדמה משולמת כרגע';
+  const blNote=document.getElementById('adv-bl-note');
+  if(blNote) blNote.textContent = ADV_BL>0 ? 'מתאים להכנסה חודשית (ברוטו) של כ-'+fmt(monthlyIncomeForBLAdvance(ADV_BL)) : 'אין מקדמה משולמת כרגע';
+}
+const ANNUAL_FIXED = [
+  {name:'דומיין',amount:92,usd:false,month:2,note:'19/2'},
+  {name:'אינשוט',amount:47.9,usd:false,month:12,note:'22/12'},
+];
+function loadAnnual(){try{const s=localStorage.getItem('nb_annual');if(s)return JSON.parse(s);}catch(e){}return[{id:1,name:'קנבה',amount:120,usd:true,month:3,note:'2/3'},{id:2,name:'קאפקאט',amount:229,usd:false,month:null,note:'טרם נרכש'}];}
+function saveAnnual(a){try{localStorage.setItem('nb_annual',JSON.stringify(a));}catch(e){}}
+let ANNUAL_VAR = loadAnnual();
+let annualNextId = Math.max(3,...ANNUAL_VAR.map(e=>e.id))+1;
+function resetAnnualToDefaults(){
+  if(!confirm('לשחזר את הוצאות השנתיות לברירת המחדל (קנבה, קאפקאט, דומיין, אינשוט)? כל ההוצאות השנתיות שהוספת בעצמך יימחקו.'))return;
+  ANNUAL_VAR=[{id:1,name:'קנבה',amount:120,usd:true,month:3,note:'2/3'},{id:2,name:'קאפקאט',amount:229,usd:false,month:null,note:'טרם נרכש'}];
+  saveAnnual(ANNUAL_VAR);
+  annualNextId=3;
+  localStorage.removeItem('nb_ann_rm');
+  localStorage.removeItem('nb_ann_ov');
+  saveDisabled('nb_dis_annual',[]);
+  renderExpenses();
+}
+
+function loadVar(){try{const s=localStorage.getItem('nb_expenses');if(s)return JSON.parse(s);}catch(e){}return[];}
+function loadFixedCustom(){try{const s=localStorage.getItem('nb_fixed_custom');if(s)return JSON.parse(s);}catch(e){}return[];}
+function saveFixedCustom(v){try{localStorage.setItem('nb_fixed_custom',JSON.stringify(v));}catch(e){}}
+let FIXED_CUSTOM = loadFixedCustom();
+let fcNextId = FIXED_CUSTOM.length?Math.max(...FIXED_CUSTOM.map(e=>e.id))+1:1;
+function loadManual(){try{const s=localStorage.getItem('nb_manual');if(s)return JSON.parse(s);}catch(e){}return[];}
+function loadCustomProducts(){try{const s=localStorage.getItem('nb_custom_products');if(s)return JSON.parse(s);}catch(e){}return[];}
+function saveCustomProducts(p){try{localStorage.setItem('nb_custom_products',JSON.stringify(p));}catch(e){}}
+let CUSTOM_PRODUCTS=loadCustomProducts();
+let cpNextId=CUSTOM_PRODUCTS.length?Math.max(...CUSTOM_PRODUCTS.map(e=>e.id))+1:1;
+
+function addCustomProduct(){
+  const name=document.getElementById('cp-name').value.trim();
+  const price=parseFloat(document.getElementById('cp-price').value)||0;
+  const max=parseInt(document.getElementById('cp-max').value)||10;
+  if(!name||price<=0)return;
+  CUSTOM_PRODUCTS.push({id:cpNextId++,name,price,max});
+  saveCustomProducts(CUSTOM_PRODUCTS);
+  document.getElementById('cp-name').value='';
+  document.getElementById('cp-price').value='';
+  toggleForm('add-custom-product-form');
+  renderCustomProducts();upd();
+}
+function removeCustomProduct(id){
+  CUSTOM_PRODUCTS=CUSTOM_PRODUCTS.filter(e=>e.id!==id);
+  saveCustomProducts(CUSTOM_PRODUCTS);
+  renderCustomProducts();upd();
+}
+function renderCustomProducts(){
+  const el=document.getElementById('custom-products-list');
+  if(!el)return;
+  el.innerHTML=CUSTOM_PRODUCTS.map(e=>`
+    <div class="sr" style="align-items:center;">
+      <div class="sl" style="display:flex;align-items:center;gap:6px;">
+        <span>${e.name} (${e.price.toLocaleString('he-IL')} ₪)</span>
+        <button onclick="removeCustomProduct(${e.id})" class="cbtn del" style="font-size:10px;padding:1px 5px;">✕</button>
+      </div>
+      <input type="range" min="0" max="${e.max}" value="0" id="scp-${e.id}" oninput="document.getElementById('vcp-${e.id}').textContent=this.value;upd()">
+      <div class="sv" id="vcp-${e.id}">0</div>
+    </div>`).join('');
+}
+function saveManual(m){try{localStorage.setItem('nb_manual',JSON.stringify(m));}catch(e){}}
+function saveVar(v){try{localStorage.setItem('nb_expenses',JSON.stringify(v));}catch(e){}}
+let VAR_EXP = loadVar();
+let varNextId = VAR_EXP.length?Math.max(...VAR_EXP.map(e=>e.id))+1:1;
+
+function getFixed(){
+  let overrides={};
+  try{overrides=JSON.parse(localStorage.getItem('nb_fixed_overrides')||'{}');}catch(e){}
+  const r=USD_RATE;
+  return [
+    {name:'קליניקלאוד',amount:77,cat:'תוכנות'},
+    {name:'גוגל Workspace',amount:83,cat:'תוכנות'},
+    {name:'סמוב',amount:87.32,cat:'תוכנות'},
+    {name:'iCloud',amount:39.9,cat:'תוכנות'},
+    {name:'סלקום',amount:29.24,cat:'תוכנות'},
+    {name:'קלוד (20$)',amount:Math.round(20*r),cat:'תוכנות'},
+    {name:'בניית אתר (עד נוב׳ 2026)',amount:1333,cat:'שירותים',note:'זמני'},
+    {name:'ליווי עסקי',amount:600,cat:'שירותים'},
+    {name:'פנסיה',amount:500,cat:'הפרשות'},
+    {name:'גמל',amount:1300,cat:'הפרשות'},
+    {name:'קרן השתלמות',amount:1700,cat:'הפרשות'},
+    ...FIXED_CUSTOM.map(e=>({name:e.name,amount:overrides[e.name]??e.amount,cat:'נוספות',_customId:e.id})),
+  ].map(e=>e._customId?e:{...e,amount:overrides[e.name]??e.amount});
+}
+
+function loadDisabled(key){try{return JSON.parse(localStorage.getItem(key)||'[]');}catch(e){return[];}}
+function saveDisabled(key,arr){try{localStorage.setItem(key,JSON.stringify(arr));}catch(e){}}
+
+function calcGrowFee(grossIncome, payState){
+  // מחשב עמלת GROW לפי הכנסה חודשית ואופן התשלום
+  // תשלום מלא: 1 ₪ לקבלה בלבד
+  // תשלום מפוצל: % מהסכום + 1 ₪ לתשלום
+  
+  // מדרגת עמלה לפי מחזור חודשי
+  let rate;
+  if(grossIncome <= 20000)       rate = 0.012;
+  else if(grossIncome <= 150000) rate = 0.010;
+  else if(grossIncome <= 250000) rate = 0.0095;
+  else                           rate = 0.009;
+
+  let receiptFee = 0;  // 1 ₪ לקבלה
+  let commFee = 0;     // % עמלת סליקה
+
+  ['preg','rise','steady'].forEach(tr=>{
+    const pt = getPayTotals(tr);
+    const price = tr==='preg'?P.preg:tr==='rise'?P.rise:P.steady;
+    // תשלום מלא: 1 ₪ לקבלה
+    receiptFee += pt.full * 1;
+    // מפוצל: 1 ₪ לכל תשלום + % עמלה
+    pt.splits.forEach(s=>{
+      receiptFee += s.count * s.n * 1;   // 1 ₪ × מספר תשלומים × מספר לקוחות
+      commFee += s.count * price * rate; // % על הסכום הכולל
+    });
+  });
+
+  // CLUB, PREMIUM, digital - assume ביט/העברה (only receipt fee)
+  try{
+    const cl=+document.getElementById('scl').value||0;
+    const pr=+document.getElementById('spr').value||0;
+    const vi=+document.getElementById('svi').value||0;
+    const ba=+document.getElementById('sba').value||0;
+    const kitchen=+document.getElementById('skitchen').value||0;
+    const momrelief=+document.getElementById('smomrelief').value||0;
+    const mf=+document.getElementById('smf').value||0;
+    receiptFee += (cl+pr+vi+ba+kitchen+momrelief+mf) * 1;
+  }catch(e){}
+
+  return {receiptFee: Math.round(receiptFee), commFee: Math.round(commFee), total: Math.round(receiptFee+commFee), rate};
+}
+
+function currentGross(){
+  try{
+    if(typeof payState==='undefined') return 0;
+    const _s=+(document.getElementById('ssingle')?.value||0);
+    const _cp=CUSTOM_PRODUCTS.reduce((s,e)=>s+(+(document.getElementById('scp-'+e.id)?.value||0))*e.price,0);
+    return inflowFromState(1,+document.getElementById('scl').value||0,+document.getElementById('spr').value||0,+document.getElementById('svi').value||0,+document.getElementById('sba').value||0,+document.getElementById('skitchen').value||0,+document.getElementById('smomrelief').value||0,+document.getElementById('smf').value||0)+_s*P.single+_cp+MANUAL_ITEMS.reduce((s,e)=>s+e.amount,0);
+  }catch(e){return 0;}
+}
+
+function renderExpenses(){
+  renderAdvanceNotes();
+  const fixed = getFixed();
+  const disabled = loadDisabled('nb_dis_fixed');
+  const activeFixed = fixed.filter(e=>!disabled.includes(e.name));
+  const fixedTotal = activeFixed.reduce((s,e)=>s+e.amount,0);
+  FIXED_TOTAL = fixedTotal;
+
+  const cg = currentGross();
+  const itax = cg>0?calcTax(cg*12):0;
+  const ibl  = cg>0?calcBL(cg):0;
+  const theoreticalTax = itax+ibl;
+  const taxTotal = ADV_TAX+ADV_BL; // מה שבאמת יוצא מהחשבון החודש (לא ההערכה התיאורטית)
+
+  // Group by cat
+  const cats={};
+  fixed.forEach(e=>{if(!cats[e.cat])cats[e.cat]=[];cats[e.cat].push(e);});
+  let html='';
+  Object.entries(cats).forEach(([cat,items])=>{
+    html+=`<div class="st" style="margin-top:8px;margin-bottom:4px;">${cat}</div>`;
+    items.forEach(e=>{
+      const isDis=disabled.includes(e.name);
+      const note=e.note?` <span style="font-size:10px;color:#b5770d;background:#fff8e1;padding:1px 5px;border-radius:3px;">${e.note}</span>`:'';
+      html+=`<div class="br" style="${(!e._customId&&isDis)?'opacity:0.4;':''}">
+        <span>${e.name}${note}</span>
+        <span style="display:flex;align-items:center;gap:7px;">
+          ${e._customId
+            ? `<span>${Math.round(e.amount).toLocaleString('he-IL')} ₪</span>
+               <button onclick="removeFixedCustom(${e._customId})" class="cbtn del" style="font-size:10px;padding:1px 7px;">✕ מחק</button>`
+            : `<input type="number" value="${Math.round(e.amount)}" min="0"
+                onchange="updateFixedAmount('${e.name.replace(/'/g,"\\'")}',+this.value)"
+                style="width:75px;font-size:12px;font-weight:600;padding:2px 6px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;">
+               <button onclick="toggleDis('nb_dis_fixed','${e.name.replace(/'/g,"\\'")}',this)" class="cbtn" style="font-size:10px;padding:1px 7px;">${isDis?'הפעל':'הסר'}</button>`}
+      </div>`;
+    });
+  });
+  document.getElementById('fixed-exp-list').innerHTML=html;
+  const fe=document.getElementById('exp-fixed-total');if(fe)fe.textContent=Math.round(fixedTotal).toLocaleString('he-IL')+' ₪';
+  document.getElementById('exp-tax-total').textContent=taxTotal.toLocaleString('he-IL')+' ₪';
+  document.getElementById('exp-tax-label').textContent='מקדמות מס בפועל';
+  const gap = theoreticalTax-taxTotal;
+  const breakdown = 'הערכת חיוב שנתי (לפי הקצב הנוכחי): '+theoreticalTax.toLocaleString('he-IL')+' ₪'
+    +' | פער מצטבר לסוף שנה: '+(gap>=0?'+':'')+gap.toLocaleString('he-IL')+' ₪'+(gap>=0?' לתשלום':' לזכותך');
+  document.getElementById('exp-tax-breakdown').textContent=breakdown;
+  const ge=document.getElementById('exp-grand-total');if(ge)ge.textContent=Math.round(fixedTotal+taxTotal).toLocaleString('he-IL')+' ₪';
+
+  // שנתיות
+  let annRm=[];try{annRm=JSON.parse(localStorage.getItem('nb_ann_rm')||'[]');}catch(e){}
+  let annOv={};try{annOv=JSON.parse(localStorage.getItem('nb_ann_ov')||'{}');}catch(e){}
+  const allAnnual=[
+    ...ANNUAL_FIXED.filter(e=>!annRm.includes(String(e.id||e.name))).map(e=>({...e,amount:annOv[e.name]??e.amount})),
+    ...ANNUAL_VAR
+  ].map(e=>({...e,final:e.usd?Math.round(e.amount*USD_RATE):e.amount}));
+  const disAnn = loadDisabled('nb_dis_annual');
+  const mNames=['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+  const curM=new Date().getMonth()+1;
+
+  document.getElementById('annual-exp-list').innerHTML=allAnnual.map(e=>{
+    const ml=e.month?mNames[e.month-1]:'—';
+    const isFixed=ANNUAL_FIXED.find(f=>f.name===e.name);
+    const isUserAdded=e.id&&!isNaN(e.id)&&e.id>=3;
+    // Amount: editable input for all, USD shows conversion
+    const amtInput=e.usd
+      ? `<span style="font-size:12px;">${e.amount}$ = </span>
+         <input type="number" value="${Math.round(e.amount*USD_RATE)}" min="0"
+           onchange="editAnnualAmount('${String(e.id||e.name).replace(/'/g,"\\'")}',${'+'+''}this.value,${!!e.usd})"
+           style="width:70px;font-size:12px;font-weight:600;padding:2px 5px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;"> <span style="font-size:11px;">₪</span>`
+      : `<input type="number" value="${e.final}" min="0"
+           onchange="editAnnualAmount('${String(e.id||e.name).replace(/'/g,"\\'")}',${'+'+''}this.value,false)"
+           style="width:70px;font-size:12px;font-weight:600;padding:2px 5px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;"> <span style="font-size:11px;">₪</span>`;
+    const key2=isUserAdded?String(e.id):encodeURIComponent(String(e.id||e.name));
+    const btn=isUserAdded
+      ? `<button class="cbtn" onclick="removeAnnual(${e.id})" style="font-size:10px;padding:1px 5px;">הסר</button>`
+      : `<button class="cbtn" onclick="doRemoveAnnualFixed(this)" data-key="${String(e.id||e.name).replace(/"/g,'&quot;')}" style="font-size:10px;padding:1px 5px;">הסר</button>`;
+    return `<div class="br" style="${e.month===curM?'background:#fff8e1;':''}">
+      <span>${e.name} <span style="font-size:10px;color:#888;">${e.note||''}</span></span>
+      <span style="display:flex;align-items:center;gap:7px;">
+        <span style="font-size:11px;color:#b5770d;background:#fff8e1;padding:1px 6px;border-radius:3px;">${ml}</span>
+        ${amtInput}
+        ${btn}
+      </span>
+    </div>`;
+  }).join('');
+
+  let calHtml='';
+  for(let m=1;m<=12;m++){
+    const hits=allAnnual.filter(e=>e.month===m&&!disAnn.includes(String(e.id||e.name)));
+    if(!hits.length)continue;
+    const t=hits.reduce((s,e)=>s+e.final,0);
+    const isCur=m===curM;
+    calHtml+=`<div class="br" style="${isCur?'background:#fff8e1;border-radius:6px;padding:4px 8px;':''}">
+      <span style="${isCur?'font-weight:700;color:#b5770d;':''}">${mNames[m-1]}${isCur?' (החודש)':''}</span>
+      <span>${t.toLocaleString('he-IL')} ₪</span>
+    </div>`;
+  }
+  document.getElementById('annual-calendar').innerHTML=calHtml||'<div style="color:#aaa;font-size:13px;">אין הוצאות מתוזמנות</div>';
+
+  // משתנות
+  const disVar=[]; // simplified - no disable on one-time expenses
+  const varMon=VAR_EXP.reduce((s,e)=>s+e.amount,0); // כל הוצאות חד פעמיות
+  document.getElementById('var-exp-list').innerHTML=VAR_EXP.length?VAR_EXP.map(e=>{
+    return `<div class="cr" id="var-row-${e.id}">
+      <div class="cn" style="width:auto;flex:1;">${e.name}</div>
+      ${e.date?`<div style="font-size:11px;color:#888;flex-shrink:0;">${new Date(e.date).toLocaleDateString('he-IL')}</div>`:''}
+      <input type="number" value="${e.amount}" min="0"
+        onchange="editVar(${e.id},+this.value)"
+        style="width:75px;font-size:12px;font-weight:600;padding:2px 6px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;">
+      <span style="font-size:11px;color:#888;">₪</span>
+      <button class="cbtn del" onclick="removeVar(${e.id})">✕ מחק</button>
+    </div>`;
+  }).join(''):'';
+  document.getElementById('var-exp-empty').style.display=VAR_EXP.length?'none':'block';
+
+  // Annual this month
+  const curM2=new Date().getMonth()+1;
+  const disAnn2=loadDisabled('nb_dis_annual');
+  const allAnnual2=[...ANNUAL_FIXED,...ANNUAL_VAR].map(e=>({...e,final:e.usd?Math.round(e.amount*USD_RATE):e.amount}));
+  const annualThisMonth=allAnnual2.filter(e=>e.month===curM2&&!disAnn2.includes(String(e.id||e.name))).reduce((s,e)=>s+e.final,0);
+
+  // GROW fee
+  try{
+    const grow = calcGrowFee(cg, typeof payState!=='undefined'?payState:{});
+    const rateLabels = {0.012:'1.2% (עד 20K)', 0.010:'1.0% (20K-150K)', 0.0095:'0.95% (150K-250K)', 0.009:'0.9% (250K+)'};
+    document.getElementById('grow-rate').textContent = rateLabels[grow.rate]||'—';
+    document.getElementById('grow-comm').textContent = grow.commFee.toLocaleString('he-IL')+' ₪';
+    document.getElementById('grow-receipt').textContent = grow.receiptFee.toLocaleString('he-IL')+' ₪';
+    document.getElementById('grow-total').textContent = grow.total.toLocaleString('he-IL')+' ₪';
+    document.getElementById('grow-note').textContent = grow.commFee===0 ? 'כל הלקוחות שילמו מלא — רק דמי קבלות' : '';
+    const growAnnualVar = grow.total + annualThisMonth + varMon;
+    var sumTotal=Math.round(fixedTotal+taxTotal+growAnnualVar);
+    document.getElementById('exp-summary-total').textContent=sumTotal.toLocaleString('he-IL')+' ₪';
+    const sumFixed=document.getElementById('sum-fixed');if(sumFixed)sumFixed.textContent=Math.round(fixedTotal).toLocaleString('he-IL')+' ₪';
+    const sumOther=document.getElementById('sum-other');if(sumOther)sumOther.textContent=Math.round(growAnnualVar).toLocaleString('he-IL')+' ₪';
+  }catch(e){
+    var sumTotal=Math.round(fixedTotal+taxTotal+varMon);
+    document.getElementById('exp-summary-total').textContent=sumTotal.toLocaleString('he-IL')+' ₪';
+    const sumFixed=document.getElementById('sum-fixed');if(sumFixed)sumFixed.textContent=Math.round(fixedTotal).toLocaleString('he-IL')+' ₪';
+  }
+  const netAfter=Math.round(cg-sumTotal);
+  const netEl=document.getElementById('exp-summary-net');
+  netEl.textContent=netAfter.toLocaleString('he-IL')+' ₪';
+  netEl.className='mv '+(netAfter>=18000?'g':netAfter>=15000?'w':'b');
+
+  const reqGross=requiredGrossForTarget(TGT);
+  document.getElementById('exp-required-gross').textContent='~'+reqGross.toLocaleString('he-IL')+' ₪';
+  document.getElementById('exp-required-gross-note').textContent='כדי להישאר עם '+TGT.toLocaleString('he-IL')+' ₪ נטו';
+}
+
+function toggleDis(key,name,btn){
+  let d=loadDisabled(key);
+  if(d.includes(name))d=d.filter(x=>x!==name);else d.push(name);
+  saveDisabled(key,d);
+  renderExpenses();
+}
+function updateRate(v){USD_RATE=parseFloat(v)||3.1;localStorage.setItem('nb_usd_rate',USD_RATE);renderExpenses();}
+
+function toggleForm2(id){document.getElementById(id).classList.toggle('hidden');}
+function addExpense(){
+  const name=document.getElementById('ef-name').value.trim();
+  const amount=parseFloat(document.getElementById('ef-amount').value)||0;
+  if(!name||amount<=0)return;
+  const d=document.getElementById('ef-date');
+  VAR_EXP.push({id:varNextId++,name,amount,type:'oneoff',date:d?d.value:''});
+  saveVar(VAR_EXP);
+  document.getElementById('ef-name').value='';
+  document.getElementById('ef-amount').value='';
+  if(d)d.value='';
+  toggleForm('exp-form');
+  renderExpenses();
+}
+function removeVar(id){VAR_EXP=VAR_EXP.filter(e=>e.id!==id);saveVar(VAR_EXP);renderExpenses();}
+function editVar(id,val){const e=VAR_EXP.find(x=>x.id===id);if(e){e.amount=val;saveVar(VAR_EXP);renderExpenses();}}
+function addAnnual(){
+  const name=document.getElementById('af-name').value.trim();
+  const amount=parseFloat(document.getElementById('af-amount').value)||0;
+  const usd=document.getElementById('af-currency').value==='usd';
+  const month=parseInt(document.getElementById('af-month').value)||null;
+  const note=document.getElementById('af-note').value.trim();
+  const dateEl=document.getElementById('af-date');
+  const exactDate=dateEl?dateEl.value:'';
+  // If exact date given, derive month from it
+  const finalMonth=exactDate?new Date(exactDate).getMonth()+1:month;
+  const displayNote=exactDate?new Date(exactDate).toLocaleDateString('he-IL')+(note?' — '+note:''):note;
+  if(!name||amount<=0)return;
+  ANNUAL_VAR.push({id:annualNextId++,name,amount,usd,month:finalMonth,note:displayNote});saveAnnual(ANNUAL_VAR);
+  document.getElementById('af-name').value='';document.getElementById('af-amount').value='';document.getElementById('af-note').value='';
+  if(dateEl)dateEl.value='';
+  toggleForm('annual-form');renderExpenses();
+}
+
+function editAnnualAmount(key, val, isUsd){
+  // Find in ANNUAL_VAR or ANNUAL_FIXED overrides
+  const numId = parseInt(key);
+  const varItem = ANNUAL_VAR.find(e=>e.id===numId||e.name===key);
+  if(varItem){
+    varItem.amount = isUsd ? val/USD_RATE : val;
+    if(!varItem.usd) varItem.final = val;
+    saveAnnual(ANNUAL_VAR);
+  } else {
+    // Fixed item - save override
+    let ov={};try{ov=JSON.parse(localStorage.getItem('nb_ann_ov')||'{}');}catch(e){}
+    ov[key]=val;
+    localStorage.setItem('nb_ann_ov', JSON.stringify(ov));
+  }
+  renderExpenses();
+}
+function doRemoveAnnualFixed(btn){
+  const key=btn.getAttribute('data-key');
+  const numKey=parseInt(key);
+  if(!isNaN(numKey)){
+    // Item is in ANNUAL_VAR (קנבה/קאפקאט with id 1 or 2)
+    ANNUAL_VAR=ANNUAL_VAR.filter(e=>e.id!==numKey);
+    saveAnnual(ANNUAL_VAR);
+  } else {
+    // Item is in ANNUAL_FIXED (דומיין/אינשוט by name)
+    let rm=[];try{rm=JSON.parse(localStorage.getItem('nb_ann_rm')||'[]');}catch(e){}
+    if(!rm.includes(key))rm.push(key);
+    localStorage.setItem('nb_ann_rm',JSON.stringify(rm));
+  }
+  renderExpenses();
+}
+function removeAnnual(id){ANNUAL_VAR=ANNUAL_VAR.filter(e=>e.id!==id);saveAnnual(ANNUAL_VAR);renderExpenses();}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 8: עריכת מחירים             ║
+// ╚══════════════════════════════════════╝
+function updateFixedAmount(name, val){
+  let overrides={};
+  try{overrides=JSON.parse(localStorage.getItem('nb_fixed_overrides')||'{}');}catch(e){}
+  overrides[name]=val;
+  localStorage.setItem('nb_fixed_overrides',JSON.stringify(overrides));
+  renderExpenses();
+}
+
+function addFixedCustom(){
+  const name=document.getElementById('ff-name').value.trim();
+  const amount=parseFloat(document.getElementById('ff-amount').value)||0;
+  if(!name||amount<=0)return;
+  FIXED_CUSTOM.push({id:fcNextId++,name,amount});
+  saveFixedCustom(FIXED_CUSTOM);
+  document.getElementById('ff-name').value='';
+  document.getElementById('ff-amount').value='';
+  toggleForm('add-fixed-form');
+  renderExpenses();
+}
+function removeFixedCustom(id){
+  FIXED_CUSTOM=FIXED_CUSTOM.filter(e=>e.id!==id);
+  saveFixedCustom(FIXED_CUSTOM);
+  renderExpenses();
+}
+
+function addManualItem(){
+  const name=document.getElementById('mi-name').value.trim();
+  const amount=parseFloat(document.getElementById('mi-amount').value);
+  if(!name||isNaN(amount))return;
+  MANUAL_ITEMS.push({id:manualNextId++,name,amount});
+  saveManual(MANUAL_ITEMS);
+  document.getElementById('mi-name').value='';
+  document.getElementById('mi-amount').value='';
+  document.getElementById('manual-form-wrapper').style.display='none';
+  upd();
+}
+function removeManualItem(id){
+  MANUAL_ITEMS=MANUAL_ITEMS.filter(e=>e.id!==id);
+  saveManual(MANUAL_ITEMS);
+  upd();
+}
+
+function openPrices(){
+  const fields=[
+    {key:'preg',label:'Pregnancy Glow Path'},{key:'rise',label:'RISE path'},
+    {key:'steady',label:'STEADY path'},{key:'club',label:'CheckMom CLUB (לאמא)'},
+    {key:'premium',label:'תיק PREMIUM'},{key:'vip',label:'תיק VIP'},{key:'basic',label:'תיק BASIC'},
+    {key:'kitchen',label:'Quick Check KITCHEN'},{key:'momrelief',label:'MomRelief'},
+    {key:'momsafe',label:'MomSafe'},{key:'single',label:'פגישה חד פעמית'},{key:'followup',label:'פגישת מעקב'},
+  ];
+  document.getElementById('price-modal-body').innerHTML=fields.map(f=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <label style="font-size:12px;color:#555;width:180px;flex-shrink:0;">${f.label}</label>
+      <input type="number" id="pe-${f.key}" value="${P[f.key]}" min="0" step="0.1"
+        style="width:80px;font-size:13px;padding:4px 8px;border:1px solid #d4c9b8;border-radius:6px;text-align:center;">
+      <span style="font-size:12px;color:#888;">₪</span>
+    </div>`).join('');
+  document.getElementById('price-modal').style.display='flex';
+}
+function closePrices(){document.getElementById('price-modal').style.display='none';}
+function savePrices_(){
+  Object.keys(DP).forEach(k=>{const el=document.getElementById('pe-'+k);if(el)P[k]=parseFloat(el.value)||0;});
+  saveP(P);upd();closePrices();
+}
+function resetPrices_(){P={...DP};saveP(P);upd();closePrices();}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 8b: סיכום חודשים            ║
+// ╚══════════════════════════════════════╝
+const HEB_MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+// התקופה העסקית רצה מה-2 בחודש עד ה-2 בחודש שאחריו
+function periodKeyForDate(d){
+  let y=d.getFullYear(), m=d.getMonth()+1;
+  if(d.getDate()<2){ m-=1; if(m===0){m=12;y-=1;} }
+  return y+'-'+String(m).padStart(2,'0');
+}
+function periodLabel(key){const [y,m]=key.split('-').map(Number);return HEB_MONTHS[m-1]+' '+y;}
+function getCurrentPeriodKey(){return periodKeyForDate(new Date());}
+function periodRangeLabel(key){
+  const [y,m]=key.split('-').map(Number);
+  let endM=m+1, endY=y; if(endM===13){endM=1;endY=y+1;}
+  return '2/'+m+'-1/'+endM+(endY!==y?'/'+endY:'');
+}
+function renderCurrentPeriodBadge(){
+  const el=document.getElementById('current-period-badge');
+  if(!el)return;
+  const key=getCurrentPeriodKey();
+  el.innerHTML='📅 חודש עבודה נוכחי: '+periodLabel(key)+' (<span dir="ltr" style="unicode-bidi:isolate;">'+periodRangeLabel(key)+'</span>)';
+}
+
+// ════ תקרת עוסק פטור ════
+function loadExemptCeiling(){const v=localStorage.getItem('nb_exempt_ceiling');return v!==null&&v!==''?parseFloat(v):120000;}
+let EXEMPT_CEILING = loadExemptCeiling();
+function updateExemptCeiling(v){
+  EXEMPT_CEILING=Math.max(1,parseFloat(v)||120000);
+  localStorage.setItem('nb_exempt_ceiling',EXEMPT_CEILING);
+  renderExemptStatus();
+}
+function yearToDateIncome(year){
+  let total=0;
+  MONTH_HISTORY.forEach(m=>{ if(m.key.startsWith(year+'-')) total+=m.income.total; });
+  const cur=getCurrentPeriodKey();
+  if(cur.startsWith(year+'-')) total+=computeMonthlyIncomeBreakdown().total;
+  return Math.round(total);
+}
+function renderExemptStatus(){
+  const ceilEl=document.getElementById('exempt-ceiling-input');
+  if(ceilEl && ceilEl.value==='') ceilEl.value=EXEMPT_CEILING;
+  const year=String(new Date().getFullYear());
+  const ytd=yearToDateIncome(year);
+  const pct=Math.min(100,Math.round(ytd/EXEMPT_CEILING*100));
+
+  const barEl=document.getElementById('exempt-bar');
+  if(barEl){ barEl.style.width=pct+'%'; barEl.style.background=ytd>=EXEMPT_CEILING?'#c0392b':pct>=80?'#e67e22':'#baa893'; }
+  const txtEl=document.getElementById('exempt-status-text');
+  if(txtEl) txtEl.textContent=fmt(ytd)+' מתוך '+fmt(EXEMPT_CEILING)+' ('+pct+'%) — הכנסות שנת '+year;
+
+  const noteEl=document.getElementById('exempt-note');
+  if(noteEl){
+    if(ytd>=EXEMPT_CEILING) noteEl.innerHTML='<div class="nt er">⚠ חצית את תקרת עוסק פטור לשנת '+year+'! נדרש לפתוח תיק עוסק מורשה במע"מ ולעדכן את רו"ח בהקדם.</div>';
+    else if(ytd>=EXEMPT_CEILING*0.8) noteEl.innerHTML='<div class="nt wa">⚠ מתקרבת לתקרת עוסק פטור ('+pct+'%) — מומלץ להתחיל לבדוק עם רו"ח את תהליך המעבר לעוסק מורשה.</div>';
+    else noteEl.innerHTML='<div class="nt ok">✓ מתחת לתקרת עוסק פטור</div>';
+  }
+
+  const banner=document.getElementById('exempt-banner');
+  if(banner){
+    if(ytd>=EXEMPT_CEILING){
+      banner.style.display='block';banner.className='exempt-banner er';
+      banner.textContent='⚠ חצית את תקרת עוסק פטור: '+fmt(ytd)+' / '+fmt(EXEMPT_CEILING)+' (שנת '+year+') — נדרש מעבר לעוסק מורשה';
+    } else if(ytd>=EXEMPT_CEILING*0.8){
+      banner.style.display='block';banner.className='exempt-banner wa';
+      banner.textContent='מתקרבת לתקרת עוסק פטור: '+fmt(ytd)+' / '+fmt(EXEMPT_CEILING)+' ('+pct+'%, שנת '+year+')';
+    } else banner.style.display='none';
+  }
+}
+
+function loadMonthHistory(){try{const s=localStorage.getItem('nb_month_history');if(s)return JSON.parse(s);}catch(e){}return [];}
+function saveMonthHistory(h){try{localStorage.setItem('nb_month_history',JSON.stringify(h));}catch(e){}}
+let MONTH_HISTORY = loadMonthHistory();
+let SELECTED_MONTH = null;
+
+// ════ פערי מס מצטברים לשנה קלנדרית ════
+function yearToDateTaxGap(year){
+  let advanceTax=0, advanceBL=0, theoreticalTax=0, theoreticalBL=0;
+  MONTH_HISTORY.forEach(m=>{
+    if(m.key.startsWith(year+'-')){
+      advanceTax+=m.expenses.tax.advanceTax; advanceBL+=m.expenses.tax.advanceBL;
+      theoreticalTax+=m.expenses.tax.theoreticalTax; theoreticalBL+=m.expenses.tax.theoreticalBL;
+    }
+  });
+  const cur=getCurrentPeriodKey();
+  if(cur.startsWith(year+'-')){
+    const exp=computeMonthlyExpenseBreakdown();
+    advanceTax+=exp.tax.advanceTax; advanceBL+=exp.tax.advanceBL;
+    theoreticalTax+=exp.tax.theoreticalTax; theoreticalBL+=exp.tax.theoreticalBL;
+  }
+  return {
+    advanceTax:Math.round(advanceTax), advanceBL:Math.round(advanceBL),
+    theoreticalTax:Math.round(theoreticalTax), theoreticalBL:Math.round(theoreticalBL),
+    gapTax:Math.round(theoreticalTax-advanceTax), gapBL:Math.round(theoreticalBL-advanceBL),
+    gapTotal:Math.round((theoreticalTax+theoreticalBL)-(advanceTax+advanceBL))
+  };
+}
+function renderTaxGapYearly(){
+  const el=document.getElementById('tax-gap-yearly');
+  if(!el)return;
+  const year=String(new Date().getFullYear());
+  const g=yearToDateTaxGap(year);
+  const row=(label,advance,theoretical)=>{
+    const pct=theoretical>0?Math.min(100,Math.round(advance/theoretical*100)):0;
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:3px;"><span>${label}</span><span>${fmt(advance)} שולם מתוך ${fmt(theoretical)} הערכה</span></div>
+      <div class="hb"><div class="hf" style="width:${pct}%;background:#baa893;"></div></div>
+    </div>`;
+  };
+  el.innerHTML = row('מס הכנסה', g.advanceTax, g.theoreticalTax)
+    + row('ביטוח לאומי', g.advanceBL, g.theoreticalBL)
+    + `<div style="margin-top:12px;background:rgba(186,168,147,0.18);border:1.5px solid #baa893;border-radius:10px;padding:12px 16px;">
+         <div style="font-size:11px;color:#8a7560;font-weight:700;margin-bottom:3px;">סה"כ פער מצטבר לשנת ${year}</div>
+         <div style="font-size:22px;font-weight:700;color:${g.gapTotal>=0?'#c0392b':'#1a7a3a'};">${g.gapTotal>=0?'+':''}${fmt(g.gapTotal)}</div>
+         <div style="font-size:11px;color:#8a7560;margin-top:2px;">${g.gapTotal>=0?'צפוי לתשלום בהתקזזות הסופית':'צפוי לזכותך בהתקזזות הסופית'}</div>
+       </div>`;
+}
+
+function computeMonthlyIncomeBreakdown(){
+  const cl=+(document.getElementById('scl')?.value||0);
+  const pr=+(document.getElementById('spr')?.value||0);
+  const vi=+(document.getElementById('svi')?.value||0);
+  const ba=+(document.getElementById('sba')?.value||0);
+  const kitchen=+(document.getElementById('skitchen')?.value||0);
+  const momrelief=+(document.getElementById('smomrelief')?.value||0);
+  const mf=+(document.getElementById('smf')?.value||0);
+  const single=+(document.getElementById('ssingle')?.value||0);
+  const cpItems=CUSTOM_PRODUCTS.map(e=>{
+    const v=+(document.getElementById('scp-'+e.id)?.value||0);
+    return [e.name+' ('+v+')', v*e.price];
+  });
+  function trackBreakdown(tr, price, label){
+    const pt=getPayTotals(tr);
+    const rows=[];
+    if(pt.full>0) rows.push([label+' מלא ('+pt.full+')',pt.full*price]);
+    pt.splits.forEach(s=>{if(s.count>0)rows.push([label+' מפוצל '+s.count+'×'+s.n+' תשלומים',s.count*(price/s.n)]);});
+    return rows;
+  }
+  const items=[
+    ...trackBreakdown('preg',P.preg,'Pregnancy'),
+    ...trackBreakdown('rise',P.rise,'RISE'),
+    ...trackBreakdown('steady',P.steady,'STEADY'),
+    ['CLUB ('+cl+' אמהות)',cl>0?cl*P.club:0],
+    ['PREMIUM ('+pr+')',pr*P.premium],
+    ['VIP ('+vi+')',vi*P.vip],
+    ['BASIC ('+ba+')',ba*P.basic],
+    ['Quick Check KITCHEN ('+kitchen+')',kitchen*P.kitchen],
+    ['MomRelief ('+momrelief+')',momrelief*P.momrelief],
+    ['פגישה חד פעמית ('+single+')',single*P.single],
+    ['פגישות מעקב ('+mf+')',mf*P.followup],
+    ...cpItems,
+  ].filter(x=>x[1]>0);
+  const manual=MANUAL_ITEMS.map(e=>[e.name,e.amount]);
+  const total=Math.round(items.reduce((s,x)=>s+x[1],0)+manual.reduce((s,x)=>s+x[1],0));
+  return {items, manual, total};
+}
+
+function computeMonthlyExpenseBreakdown(){
+  const fixed=getFixed();
+  const disabled=loadDisabled('nb_dis_fixed');
+  const activeFixed=fixed.filter(e=>!disabled.includes(e.name));
+  const fixedTotal=Math.round(activeFixed.reduce((s,e)=>s+e.amount,0));
+
+  const income=computeMonthlyIncomeBreakdown();
+  const cg=income.total;
+  const itax=cg>0?calcTax(cg*12):0;
+  const ibl=cg>0?calcBL(cg):0;
+  const theoreticalTax=itax+ibl;
+  const taxTotal=ADV_TAX+ADV_BL; // המקדמות שבאמת משולמות, לא ההערכה התיאורטית
+
+  let annOv={};try{annOv=JSON.parse(localStorage.getItem('nb_ann_ov')||'{}');}catch(e){}
+  let annRm=[];try{annRm=JSON.parse(localStorage.getItem('nb_ann_rm')||'[]');}catch(e){}
+  const disAnn=loadDisabled('nb_dis_annual');
+  const allAnnual=[
+    ...ANNUAL_FIXED.filter(e=>!annRm.includes(String(e.id||e.name))).map(e=>({...e,amount:annOv[e.name]??e.amount})),
+    ...ANNUAL_VAR
+  ].map(e=>({...e,final:e.usd?Math.round(e.amount*USD_RATE):e.amount}));
+  const curM=new Date().getMonth()+1;
+  const annualThisMonth=allAnnual.filter(e=>e.month===curM&&!disAnn.includes(String(e.id||e.name)));
+  const annualTotal=Math.round(annualThisMonth.reduce((s,e)=>s+e.final,0));
+
+  const varTotal=Math.round(VAR_EXP.reduce((s,e)=>s+e.amount,0));
+  const grow=calcGrowFee(cg, typeof payState!=='undefined'?payState:{});
+
+  const total=Math.round(fixedTotal+taxTotal+grow.total+annualTotal+varTotal);
+  return {
+    fixed:{total:fixedTotal, items:activeFixed.map(e=>[e.name,Math.round(e.amount)])},
+    tax:{total:Math.round(taxTotal), advanceTax:Math.round(ADV_TAX), advanceBL:Math.round(ADV_BL), theoretical:Math.round(theoreticalTax), theoreticalTax:Math.round(itax), theoreticalBL:Math.round(ibl)},
+    grow:{total:grow.total, comm:grow.commFee, receipt:grow.receiptFee},
+    annual:{total:annualTotal, items:annualThisMonth.map(e=>[e.name,Math.round(e.final)])},
+    variable:{total:varTotal, items:VAR_EXP.map(e=>[e.name,Math.round(e.amount)])},
+    total
+  };
+}
+
+function getMonthEntry(key){
+  if(key===getCurrentPeriodKey()){
+    const income=computeMonthlyIncomeBreakdown();
+    const expenses=computeMonthlyExpenseBreakdown();
+    return {key,label:periodLabel(key),income,expenses,net:income.total-expenses.total,open:true};
+  }
+  return MONTH_HISTORY.find(m=>m.key===key);
+}
+
+function closeMonth(periodKey){
+  const income=computeMonthlyIncomeBreakdown();
+  const expenses=computeMonthlyExpenseBreakdown();
+  const entry={key:periodKey,label:periodLabel(periodKey),closedAt:new Date().toISOString(),income,expenses,net:income.total-expenses.total};
+  MONTH_HISTORY=MONTH_HISTORY.filter(m=>m.key!==periodKey);
+  MONTH_HISTORY.push(entry);
+  MONTH_HISTORY.sort((a,b)=>a.key.localeCompare(b.key));
+  saveMonthHistory(MONTH_HISTORY);
+  resetSim();
+}
+
+function checkPeriodRollover(){
+  const cur=getCurrentPeriodKey();
+  const stored=localStorage.getItem('nb_current_period');
+  if(!stored){ localStorage.setItem('nb_current_period',cur); return; }
+  if(stored!==cur){
+    closeMonth(stored);
+    localStorage.setItem('nb_current_period',cur);
+  }
+}
+
+function closeMonthManually(){
+  if(!confirm('לסגור את החודש הנוכחי כעת ולהתחיל חודש חדש? הפעולה תאפס את הסימולטור.'))return;
+  closeMonth(getCurrentPeriodKey());
+  localStorage.setItem('nb_current_period',getCurrentPeriodKey());
+  renderSummary();
+}
+
+function renderSummary(){
+  try{
+  checkPeriodRollover();
+  renderExemptStatus();
+  renderTaxGapYearly();
+  const cur=getCurrentPeriodKey();
+  const months=MONTH_HISTORY.filter(m=>m.key!==cur).slice(-11);
+  const live=getMonthEntry(cur);
+  const all=[...months, live];
+  if(SELECTED_MONTH && !all.find(m=>m.key===SELECTED_MONTH)) SELECTED_MONTH=null;
+  const mx=Math.max(...all.map(m=>Math.max(m.income.total,m.expenses.total)),1);
+
+  document.getElementById('summary-chart').innerHTML = all.map(m=>{
+    const incP=Math.max(2,Math.round(m.income.total/mx*100));
+    const expP=Math.max(2,Math.round(m.expenses.total/mx*100));
+    const isSel=SELECTED_MONTH===m.key;
+    return `<div onclick="selectSummaryMonth('${m.key}')" style="cursor:pointer;border:1.5px solid ${isSel?'#baa893':'#e6ddd0'};border-radius:10px;padding:10px 12px;${isSel?'background:#F5F0E8;':''}">
+      <div style="font-size:12px;font-weight:700;color:#baa893;margin-bottom:6px;">${m.label}${m.open?' <span style="font-weight:400;color:#b9a792;">(פתוח, מתעדכן)</span>':''}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:11px;color:#888;width:54px;">הכנסות</span>
+        <div style="flex:1;background:#eee;border-radius:4px;height:10px;overflow:hidden;"><div style="height:100%;width:${incP}%;background:#baa893;"></div></div>
+        <span style="font-size:11px;font-weight:600;width:80px;text-align:left;">${fmt(m.income.total)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:11px;color:#888;width:54px;">הוצאות</span>
+        <div style="flex:1;background:#eee;border-radius:4px;height:10px;overflow:hidden;"><div style="height:100%;width:${expP}%;background:#c0392b;"></div></div>
+        <span style="font-size:11px;font-weight:600;width:80px;text-align:left;">${fmt(m.expenses.total)}</span>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:${m.net>=0?'#1a7a3a':'#c0392b'};">נטו: ${fmt(m.net)}</div>
+    </div>`;
+  }).join('');
+
+  const detailCard=document.getElementById('summary-detail-card');
+  try{
+    if(SELECTED_MONTH){
+      detailCard.style.display='block';
+      document.getElementById('summary-detail').innerHTML = renderMonthDetail(getMonthEntry(SELECTED_MONTH)||live);
+    } else {
+      detailCard.style.display='none';
+      document.getElementById('summary-detail').innerHTML='';
+    }
+  }catch(err){
+    console.error('renderMonthDetail crashed:',err);
+    detailCard.style.display='block';
+    document.getElementById('summary-detail').innerHTML = '<div style="color:#c0392b;font-size:13px;padding:24px 0;text-align:center;">שגיאה בהצגת פירוט החודש — נסי לרענן את הדף</div>';
+  }
+  }catch(err){console.error('renderSummary crashed:',err);}
+}
+
+function selectSummaryMonth(key){SELECTED_MONTH=(SELECTED_MONTH===key)?null:key;renderSummary();}
+
+function renderMonthDetail(m){
+  const incItems=m.income?.items||[];
+  const incManual=m.income?.manual||[];
+  const fixedItems=m.expenses?.fixed?.items||[];
+  const annualItems=m.expenses?.annual?.items||[];
+  const varItems=m.expenses?.variable?.items||[];
+  const tax=m.expenses?.tax||{};
+  const grow=m.expenses?.grow||{total:0};
+  const incRows=[...incItems, ...incManual].map(([l,v])=>`<div class="br"><span>${l}</span><span>${fmt(v)}</span></div>`).join('');
+  const expRows=[
+    ...fixedItems.map(([l,v])=>['קבועה: '+l,v]),
+    ...annualItems.map(([l,v])=>['שנתית: '+l,v]),
+    ...varItems.map(([l,v])=>['חד פעמית: '+l,v]),
+    ['מקדמת מס הכנסה', tax.advanceTax||0],
+    ['מקדמת ביטוח לאומי', tax.advanceBL||0],
+    ['עמלת GROW', grow.total||0],
+  ].filter(x=>x[1]>0).map(([l,v])=>`<div class="br"><span>${l}</span><span>${fmt(v)}</span></div>`).join('');
+
+  const taxGap = (tax.theoretical||0) - (tax.total||0);
+
+  return `
+    <div class="ph">
+      <span>${m.label}${m.open?' — חודש פתוח, מתעדכן בזמן אמת':' — נסגר ב-'+new Date(m.closedAt).toLocaleDateString('he-IL')}</span>
+      <div style="display:flex;gap:6px;">
+        ${m.open?'<button class="btn-sec" onclick="closeMonthManually()">🔒 סגירה ידנית כעת</button>':''}
+        <button class="btn-sec" onclick="copyMonthSummary('${m.key}')">📋 העתקה לטקסט</button>
+        <button class="btn-primary" onclick="exportMonthPDF('${m.key}')">📄 PDF לרו"ח</button>
+      </div>
+    </div>
+    <div class="st" style="margin-top:8px;">הכנסות — סה"כ ${fmt(m.income.total)}</div>
+    ${incRows||'<div style="color:#aaa;font-size:13px;padding:6px 0;">אין הכנסות</div>'}
+    <div class="st" style="margin-top:12px;">הוצאות (מה שבאמת שולם) — סה"כ ${fmt(m.expenses.total)}</div>
+    ${expRows||'<div style="color:#aaa;font-size:13px;padding:6px 0;">אין הוצאות</div>'}
+    <div style="font-size:11px;color:#b5770d;margin-top:6px;">הערכת חיוב שנתי בפועל (מ"ה+בטל"א) לפי קצב ההכנסה: ${fmt(tax.theoretical||0)} | פער מצטבר לסוף שנה: ${taxGap>=0?'+':''}${fmt(taxGap)} ${taxGap>=0?'לתשלום':'לזכותך'}</div>
+    <div class="dv"></div>
+    <div style="font-size:16px;font-weight:700;color:${m.net>=0?'#1a7a3a':'#c0392b'};">נטו: ${fmt(m.net)}</div>
+  `;
+}
+
+function copyMonthSummary(key){
+  const m=getMonthEntry(key);
+  if(!m)return;
+  let txt=`סיכום חודשי — ${m.label}\n\n`;
+  txt+=`הכנסות (סה"כ ${m.income.total.toLocaleString('he-IL')} ₪):\n`;
+  [...m.income.items,...m.income.manual].forEach(([l,v])=>txt+=`  ${l}: ${Math.round(v).toLocaleString('he-IL')} ₪\n`);
+  txt+=`\nהוצאות ששולמו בפועל (סה"כ ${m.expenses.total.toLocaleString('he-IL')} ₪):\n`;
+  m.expenses.fixed.items.forEach(([l,v])=>txt+=`  קבועה - ${l}: ${v.toLocaleString('he-IL')} ₪\n`);
+  m.expenses.annual.items.forEach(([l,v])=>txt+=`  שנתית - ${l}: ${v.toLocaleString('he-IL')} ₪\n`);
+  m.expenses.variable.items.forEach(([l,v])=>txt+=`  חד פעמית - ${l}: ${v.toLocaleString('he-IL')} ₪\n`);
+  txt+=`  מקדמת מס הכנסה: ${m.expenses.tax.advanceTax.toLocaleString('he-IL')} ₪\n`;
+  txt+=`  מקדמת ביטוח לאומי: ${m.expenses.tax.advanceBL.toLocaleString('he-IL')} ₪\n`;
+  txt+=`  עמלת GROW: ${m.expenses.grow.total.toLocaleString('he-IL')} ₪\n`;
+  const taxGap=m.expenses.tax.theoretical-m.expenses.tax.total;
+  txt+=`\nהערכת חיוב שנתי בפועל (מ"ה+בטל"א) לפי קצב ההכנסה: ${m.expenses.tax.theoretical.toLocaleString('he-IL')} ₪ (פער מצטבר לסוף שנה: ${taxGap>=0?'+':''}${taxGap.toLocaleString('he-IL')} ₪ ${taxGap>=0?'לתשלום':'לזכותך'})\n`;
+  txt+=`\nנטו: ${m.net.toLocaleString('he-IL')} ₪`;
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(txt).then(()=>alert('הסיכום הועתק ללוח ✓')).catch(()=>alert(txt));
+  } else alert(txt);
+}
+
+// מדפיסה HTML דרך iframe חבוי באותו עמוד — בלי לפתוח חלון חדש, כדי שחוסם פופ-אפים (כמו ב-file://) לא יתערב
+function printHTML(html){
+  let iframe=document.getElementById('print-iframe');
+  if(iframe) iframe.remove();
+  iframe=document.createElement('iframe');
+  iframe.id='print-iframe';
+  // גודל אמיתי (לא 0x0) כי חלק ממנועי הדפסה לא מציגים תצוגה מקדימה לאלמנט בגודל אפס — מוסתר ויזואלית בלבד
+  iframe.style.cssText='position:fixed;left:-9999px;top:0;width:800px;height:1100px;border:0;';
+  document.body.appendChild(iframe);
+  iframe.onload=()=>{
+    setTimeout(()=>{try{iframe.contentWindow.focus();iframe.contentWindow.print();}catch(e){alert('שגיאה בהדפסה: '+e.message);}},150);
+  };
+  iframe.srcdoc=html;
+}
+
+function exportMonthPDF(key){
+  const m=getMonthEntry(key);
+  if(!m)return;
+  const row=(l,v)=>`<tr><td>${l}</td><td>${Math.round(v).toLocaleString('he-IL')} ₪</td></tr>`;
+  const incRows=[...m.income.items,...m.income.manual].map(([l,v])=>row(l,v)).join('');
+  const expRows=[
+    ...m.expenses.fixed.items.map(([l,v])=>['קבועה - '+l,v]),
+    ...m.expenses.annual.items.map(([l,v])=>['שנתית - '+l,v]),
+    ...m.expenses.variable.items.map(([l,v])=>['חד פעמית - '+l,v]),
+    ['מקדמת מס הכנסה', m.expenses.tax.advanceTax],
+    ['מקדמת ביטוח לאומי', m.expenses.tax.advanceBL],
+    ['עמלת GROW', m.expenses.grow.total],
+  ].filter(x=>x[1]>0).map(([l,v])=>row(l,v)).join('');
+  const taxGap=m.expenses.tax.theoretical-m.expenses.tax.total;
+
+  const html=`<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8">
+<title>סיכום חודשי — ${m.label}</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;color:#222;padding:30px;max-width:700px;margin:0 auto;}
+  h1{font-size:20px;color:#baa893;margin-bottom:2px;}
+  h2{font-size:14px;color:#baa893;border-bottom:1.5px solid #b9a792;padding-bottom:4px;margin-top:26px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+  td{padding:5px 4px;border-bottom:1px solid #eee;}
+  td:last-child{text-align:left;font-weight:600;white-space:nowrap;}
+  .note{font-size:11px;color:#b5770d;margin-top:8px;}
+  .net{margin-top:24px;font-size:18px;font-weight:700;color:${m.net>=0?'#1a7a3a':'#c0392b'};}
+  .meta{font-size:11px;color:#888;margin-bottom:18px;}
+  @media print{body{padding:10px;}}
+</style></head><body>
+  <h1>סיכום חודשי לרו"ח — ${m.label}</h1>
+  <div class="meta">נעם בר-אל עזריאל | דיאטנית קלינית B.Sc &middot; ${m.open?'חודש פתוח (מתעדכן)':'נסגר ב-'+new Date(m.closedAt).toLocaleDateString('he-IL')}</div>
+
+  <h2>הכנסות — סה"כ ${m.income.total.toLocaleString('he-IL')} ₪</h2>
+  <table>${incRows||'<tr><td>אין הכנסות</td><td></td></tr>'}</table>
+
+  <h2>הוצאות ששולמו בפועל — סה"כ ${m.expenses.total.toLocaleString('he-IL')} ₪</h2>
+  <table>${expRows||'<tr><td>אין הוצאות</td><td></td></tr>'}</table>
+  <div class="note">הערכת חיוב שנתי בפועל (מ"ה+בטל"א) לפי קצב ההכנסה: ${m.expenses.tax.theoretical.toLocaleString('he-IL')} ₪ | פער מצטבר לסוף שנה: ${taxGap>=0?'+':''}${taxGap.toLocaleString('he-IL')} ₪ ${taxGap>=0?'לתשלום':'לזכותך'}</div>
+
+  <div class="net">נטו: ${m.net.toLocaleString('he-IL')} ₪</div>
+</body></html>`;
+
+  printHTML(html);
+}
+
+// ════ דוחות מרובי-חודשים (דו-חודשי / שנתי) ════
+function getReportMonths(n){
+  const cur=getCurrentPeriodKey();
+  const live=getMonthEntry(cur);
+  if(n==='year'){
+    const year=String(new Date().getFullYear());
+    const closed=MONTH_HISTORY.filter(m=>m.key.startsWith(year+'-'));
+    const all=closed.some(m=>m.key===cur)?closed:[...closed, live];
+    return all.sort((a,b)=>a.key.localeCompare(b.key));
+  }
+  const closed=MONTH_HISTORY.filter(m=>m.key!==cur).slice(-(n-1));
+  return [...closed, live].sort((a,b)=>a.key.localeCompare(b.key));
+}
+
+function buildReportHTML(months, title){
+  const row=(l,v)=>`<tr><td>${l}</td><td>${Math.round(v).toLocaleString('he-IL')} ₪</td></tr>`;
+  let totalIncome=0, totalExpense=0, totalAdvTax=0, totalAdvBL=0, totalTheoTax=0, totalTheoBL=0;
+  const monthSections=months.map(m=>{
+    totalIncome+=m.income.total; totalExpense+=m.expenses.total;
+    totalAdvTax+=m.expenses.tax.advanceTax; totalAdvBL+=m.expenses.tax.advanceBL;
+    totalTheoTax+=m.expenses.tax.theoreticalTax; totalTheoBL+=m.expenses.tax.theoreticalBL;
+    const incRows=[...m.income.items,...m.income.manual].map(([l,v])=>row(l,v)).join('');
+    const expRows=[
+      ...m.expenses.fixed.items.map(([l,v])=>['קבועה - '+l,v]),
+      ...m.expenses.annual.items.map(([l,v])=>['שנתית - '+l,v]),
+      ...m.expenses.variable.items.map(([l,v])=>['חד פעמית - '+l,v]),
+      ['מקדמת מס הכנסה', m.expenses.tax.advanceTax],
+      ['מקדמת ביטוח לאומי', m.expenses.tax.advanceBL],
+      ['עמלת GROW', m.expenses.grow.total],
+    ].filter(x=>x[1]>0).map(([l,v])=>row(l,v)).join('');
+    return `<h2 class="month-hdr">${m.label}${m.open?' (פתוח, מתעדכן)':''} — נטו ${m.net.toLocaleString('he-IL')} ₪</h2>
+      <h3>הכנסות — סה"כ ${m.income.total.toLocaleString('he-IL')} ₪</h3>
+      <table>${incRows||'<tr><td>אין הכנסות</td><td></td></tr>'}</table>
+      <h3>הוצאות — סה"כ ${m.expenses.total.toLocaleString('he-IL')} ₪</h3>
+      <table>${expRows||'<tr><td>אין הוצאות</td><td></td></tr>'}</table>`;
+  }).join('<hr style="margin:18px 0;border:none;border-top:1px solid #e6ddd0;">');
+
+  const gapTax=totalTheoTax-totalAdvTax, gapBL=totalTheoBL-totalAdvBL, net=totalIncome-totalExpense;
+
+  return `<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>${title}</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;color:#222;padding:30px;max-width:760px;margin:0 auto;}
+  h1{font-size:20px;color:#baa893;margin-bottom:2px;}
+  h2.month-hdr{font-size:15px;color:#fff;background:#baa893;padding:7px 10px;border-radius:6px;margin-top:24px;}
+  h3{font-size:12px;color:#96815f;font-weight:700;margin-top:14px;margin-bottom:2px;}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;}
+  td{padding:4px;border-bottom:1px solid #eee;}
+  td:last-child{text-align:left;font-weight:600;white-space:nowrap;}
+  .meta{font-size:11px;color:#888;margin-bottom:14px;}
+  .summary{margin-top:26px;border-top:2px solid #baa893;padding-top:12px;}
+  .summary div{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
+  .net{margin-top:10px;font-size:18px;font-weight:700;color:${net>=0?'#1a7a3a':'#c0392b'};}
+  @media print{body{padding:10px;}}
+</style></head><body>
+  <h1>${title}</h1>
+  <div class="meta">נעם בר-אל עזריאל | דיאטנית קלינית B.Sc &middot; הופק ב-${new Date().toLocaleDateString('he-IL')}</div>
+  ${monthSections}
+  <div class="summary">
+    <div><span>סה"כ הכנסות לתקופה</span><span>${totalIncome.toLocaleString('he-IL')} ₪</span></div>
+    <div><span>סה"כ הוצאות ששולמו בפועל לתקופה</span><span>${totalExpense.toLocaleString('he-IL')} ₪</span></div>
+    <div><span>סה"כ מקדמת מס הכנסה ששולמה</span><span>${totalAdvTax.toLocaleString('he-IL')} ₪</span></div>
+    <div><span>סה"כ מקדמת ביטוח לאומי ששולמה</span><span>${totalAdvBL.toLocaleString('he-IL')} ₪</span></div>
+    <div><span>הערכת חיוב תיאורטי מצטבר (מ"ה+בטל"א)</span><span>${(totalTheoTax+totalTheoBL).toLocaleString('he-IL')} ₪</span></div>
+    <div><span>פער מצטבר (מ"ה)</span><span>${gapTax>=0?'+':''}${gapTax.toLocaleString('he-IL')} ₪</span></div>
+    <div><span>פער מצטבר (בטל"א)</span><span>${gapBL>=0?'+':''}${gapBL.toLocaleString('he-IL')} ₪</span></div>
+  </div>
+  <div class="net">נטו לתקופה: ${net.toLocaleString('he-IL')} ₪</div>
+</body></html>`;
+}
+
+function exportRangePDF(n){
+  const months=n>=12?getReportMonths('year'):getReportMonths(n);
+  if(!months.length){ alert('אין נתונים להצגה');return; }
+  const title=n>=12?'דוח שנתי לרו"ח — שנת '+new Date().getFullYear():'דוח דו-חודשי לרו"ח — '+months[0].label+' עד '+months[months.length-1].label;
+  const html=buildReportHTML(months, title);
+  printHTML(html);
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 9: טאבים ואתחול             ║
+// ╚══════════════════════════════════════╝
+function showTab(name,btn){
+  ['clients','sim','cf','exp','summary'].forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'block':'none');
+  document.querySelectorAll('.tb').forEach(b=>b.className='tb');
+  if(btn)btn.className='tb a';
+  if(name==='cf'||name==='exp') upd();
+  if(name==='summary') renderSummary();
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 6b: accordion תשלומים       ║
+// ╚══════════════════════════════════════╝
+const PAY_OPTIONS = {
+  preg: [1,2,3,4],
+  rise: [1,2,3],
+  steady: [1,2,3]
+};
+const PAY_LABELS = {1:'מלא',2:'2 תשלומים',3:'3 תשלומים',4:'4 תשלומים'};
+const PAY_PRICES = {preg:'P.preg',rise:'P.rise',steady:'P.steady'};
+
+
+function toggleCardSection(id,headerEl){
+  const el=document.getElementById(id);
+  const arrow=document.getElementById(id+'-arrow');
+  if(el.style.display==='none'){el.style.display='block';if(arrow)arrow.textContent='▾';}
+  else{el.style.display='none';if(arrow)arrow.textContent='▸';}
+}
+function toggleAccordion(id){
+  const el=document.getElementById(id);
+  const tr=id.replace('acc-','');
+  const btn=document.getElementById('btn-acc-'+tr);
+  if(el.style.display==='none'){el.style.display='block';btn.textContent='▾';}
+  else{el.style.display='none';btn.textContent='▸';}
+}
+
+function updatePayBreakdown(tr){
+  const total = +document.getElementById(tr==='preg'?'sp-total':tr==='rise'?'sr-total':'sst-total').value;
+  document.getElementById(tr==='preg'?'vp-total':tr==='rise'?'vr-total':'vst-total').textContent = total;
+  // Reset: put all in "full payment"
+  const opts = PAY_OPTIONS[tr];
+  opts.forEach(o=>payState[tr][o]=0);
+  payState[tr][1] = total;
+  renderPayRows(tr);
+}
+
+function renderPayRows(tr){
+  const total = +document.getElementById(tr==='preg'?'sp-total':tr==='rise'?'sr-total':'sst-total').value;
+  const opts = PAY_OPTIONS[tr];
+  const price = tr==='preg'?P.preg:tr==='rise'?P.rise:P.steady;
+  const used = opts.reduce((s,o)=>s+(payState[tr][o]||0),0);
+  const ok = used===total;
+  const checkEl = document.getElementById(tr+'-sum-check');
+  if(checkEl) checkEl.textContent = used+' / '+total+(ok?' ✓':' ⚠');
+  if(checkEl) checkEl.style.color = ok?'#1a7a3a':'#c0392b';
+
+  const rowsEl = document.getElementById(tr+'-pay-rows');
+  if(!rowsEl) return;
+  rowsEl.innerHTML = opts.map(o=>{
+    const cnt = payState[tr][o]||0;
+    const install = o===1?price:Math.round(price/o);
+    const lbl = o===1?'תשלום מלא ('+price.toLocaleString('he-IL')+' ₪)':o+' תשלומים × '+install.toLocaleString('he-IL')+' ₪';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;">
+      <div style="flex:1;color:#555;">${lbl}</div>
+      <input type="number" min="0" max="${total}" value="${cnt}" step="1"
+        onchange="payState['${tr}'][${o}]=Math.max(0,+this.value||0);renderPayRows('${tr}');upd();"
+        style="width:56px;font-size:13px;font-weight:600;padding:4px 8px;border:1px solid #d4c9b8;border-radius:6px;text-align:center;">
+      <span style="font-size:11px;color:#aaa;">לקוחות</span>
+    </div>`;
+  }).join('');
+}
+
+function getPayTotals(tr){
+  // returns {full, splits: [{n: numInstallments, count: numClients}]}
+  const opts = PAY_OPTIONS[tr];
+  const full = payState[tr][1]||0;
+  // Each split type is independent - 2 clients on 2-pay and 1 client on 3-pay
+  const splits = opts.filter(o=>o>1).map(o=>({n:o,count:payState[tr][o]||0})).filter(x=>x.count>0);
+  return {full, splits};
+}
+
+// ╔══════════════════════════════════════╗
+// ║  SECTION 10: אתחול                   ║
+// ╚══════════════════════════════════════╝
+document.getElementById('tgt-input').value=TGT;
+document.getElementById('adv-tax').value=ADV_TAX;
+document.getElementById('adv-bl').value=ADV_BL;
+document.getElementById('exempt-ceiling-input').value=EXEMPT_CEILING;
+renderClients();
+renderExLoad();
+renderCustomProducts();
+applySimState(); // משחזר את הסליידרים/פיצולי תשלום ששמרת — לפני בדיקת סגירת חודש
+checkPeriodRollover(); // אם עברנו חודש, יסגור את הקודם (עם הנתונים שחזרו) ויאפס לחודש הבא
+renderExemptStatus();
+['preg','rise','steady'].forEach(tr=>renderPayRows(tr));
+upd();
+renderExpenses();
+setInterval(checkPeriodRollover, 5*60*1000);
+
+</script>
+</body>
+</html>
