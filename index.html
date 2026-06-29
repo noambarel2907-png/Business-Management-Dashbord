@@ -619,6 +619,19 @@ function requiredGrossForTarget(target){
   }
   return Math.round(hi);
 }
+// כמו requiredGrossForTarget, אבל לפי הוצאות בפועל (מקדמות אמיתיות) ולא לפי החיוב התיאורטי
+function requiredGrossForTargetReal(target){
+  const e=computeMonthlyExpenseBreakdown();
+  const baseExpense=e.fixed.total+e.tax.total+e.annual.total+e.variable.total;
+  let lo=0, hi=500000;
+  for(let i=0;i<60;i++){
+    const mid=(lo+hi)/2;
+    const grow=calcGrowFee(mid, typeof payState!=='undefined'?payState:{}).total;
+    const net=mid-baseExpense-grow;
+    if(net<target) lo=mid; else hi=mid;
+  }
+  return Math.round(hi);
+}
 let FIXED_TOTAL = 4462; // יתעדכן
 
 // ════ HELPERS ════
@@ -880,7 +893,7 @@ function upd(){
   // הכנסה חודש 1
   const manualTotal=MANUAL_ITEMS.reduce((s,e)=>s+e.amount,0);
   const ng = inflowFromState(1,cl,pr,vi,ba,kitchen,momrelief,mf)+single*P.single+cpTotal+manualTotal;
-  const reqGross = requiredGrossForTarget(TGT);
+  const reqGross = requiredGrossForTargetReal(TGT);
   const grossGap = ng-reqGross;
   const tdEl=document.getElementById("tgt-display");if(tdEl)tdEl.textContent=fmt(TGT);
 
@@ -1337,7 +1350,7 @@ function renderExpenses(){
   netEl.textContent=netAfter.toLocaleString('he-IL')+' ₪';
   netEl.className='mv '+(netAfter>=18000?'g':netAfter>=15000?'w':'b');
 
-  const reqGross=requiredGrossForTarget(TGT);
+  const reqGross=requiredGrossForTargetReal(TGT);
   document.getElementById('exp-required-gross').textContent='~'+reqGross.toLocaleString('he-IL')+' ₪';
   document.getElementById('exp-required-gross-note').textContent='כדי להישאר עם '+TGT.toLocaleString('he-IL')+' ₪ נטו';
 }
