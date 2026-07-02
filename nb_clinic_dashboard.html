@@ -412,7 +412,7 @@ h1 { font-size: 18px; color: #96815f; margin-bottom: 14px; font-weight: 700; }
 
   <div class="card">
     <div class="ph"><span>עמלת סליקה GROW</span></div>
-    <p style="font-size:11px;color:#888;margin-bottom:12px;">תשלום מלא (ביט/פייבוקס/העברה) = 1 ₪ לקבלה בלבד. חלוקה לתשלומים = עמלת סליקה + 1 ₪ לתשלום.</p>
+    <p style="font-size:11px;color:#888;margin-bottom:12px;">תשלום מלא (ביט/פייבוקס/העברה) = 1 ₪ לקבלה בלבד. חלוקה לתשלומים = עמלת סליקה + 1 ₪ לתשלום. מוצר דיגיטלי = +1 ₪ נוסף לחשבונית.</p>
     <div class="g4" style="margin-bottom:10px;">
       <div class="mc"><div class="ml">מדרגת עמלה</div><div class="mv" id="grow-rate">—</div><div class="ms">לפי מחזור חודשי</div></div>
       <div class="mc"><div class="ml">עמלת סליקה (%)</div><div class="mv" id="grow-comm">—</div></div>
@@ -1183,7 +1183,8 @@ function calcGrowFee(grossIncome, payState){
     });
   });
 
-  // CLUB, PREMIUM, digital - assume ביט/העברה (only receipt fee)
+  // שירותים (Club, פגישת מעקב): 1 ₪ קבלה בלבד
+  // מוצרים דיגיטליים (PREMIUM/VIP/BASIC/Kitchen/MomRelief/Custom): 1 ₪ קבלה + 1 ₪ חשבונית = 2 ₪
   try{
     const cl=+document.getElementById('scl').value||0;
     const pr=+document.getElementById('spr').value||0;
@@ -1192,7 +1193,10 @@ function calcGrowFee(grossIncome, payState){
     const kitchen=+document.getElementById('skitchen').value||0;
     const momrelief=+document.getElementById('smomrelief').value||0;
     const mf=+document.getElementById('smf').value||0;
-    receiptFee += (cl+pr+vi+ba+kitchen+momrelief+mf) * 1;
+    receiptFee += (cl + mf) * 1;
+    receiptFee += (pr + vi + ba + kitchen + momrelief) * 2;
+    const cpCount = CUSTOM_PRODUCTS.reduce((s,e)=>s+(+(document.getElementById('scp-'+e.id)?.value||0)),0);
+    receiptFee += cpCount * 2;
   }catch(e){}
 
   return {receiptFee: Math.round(receiptFee), commFee: Math.round(commFee), total: Math.round(receiptFee+commFee), rate};
@@ -1807,7 +1811,7 @@ function renderMonthDetail(m){
     <div class="ph">
       <span>${m.label}${m.open?' — חודש פתוח, מתעדכן בזמן אמת':' — נסגר ב-'+new Date(m.closedAt).toLocaleDateString('he-IL')}</span>
       <div style="display:flex;gap:6px;">
-        ${m.open?'<button class="btn-sec" onclick="closeMonthManually()">🔒 סגירה ידנית כעת</button>':''}
+        ${m.open?'<button class="btn-sec" onclick="closeMonthManually()">🔒 סגירה ידנית כעת</button>':'<button class="btn-sec" onclick="editMonthEntry(\''+m.key+'\')">✏️ עריכה</button>'}
         <button class="btn-sec" onclick="copyMonthSummary('${m.key}')">📋 העתקה לטקסט</button>
         <button class="btn-primary" onclick="exportMonthPDF('${m.key}')">📄 PDF לרו"ח</button>
       </div>
@@ -1820,6 +1824,60 @@ function renderMonthDetail(m){
     <div class="dv"></div>
     <div style="font-size:16px;font-weight:700;color:${m.net>=0?'#1a7a3a':'#c0392b'};">נטו: ${fmt(m.net)}</div>
   `;
+}
+
+function editMonthEntry(key){
+  const m=getMonthEntry(key);
+  if(!m||m.open)return;
+  const incItems=[...(m.income?.items||[]),...(m.income?.manual||[])];
+  const rows=incItems.map((item,i)=>`
+    <div class="br" style="gap:6px;">
+      <input type="text" value="${String(item[0]).replace(/"/g,'&quot;')}" id="edit-lbl-${i}" style="flex:1;min-width:0;border:1px solid #e0d8cc;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;">
+      <input type="number" value="${Math.round(item[1])}" id="edit-val-${i}" style="width:88px;border:1px solid #e0d8cc;border-radius:4px;padding:3px 7px;font-size:12px;">
+    </div>`).join('');
+  window._editRowCount=incItems.length;
+  document.getElementById('summary-detail').innerHTML=`
+    <div class="ph">
+      <span>✏️ עריכת ${m.label}</span>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sec" onclick="SELECTED_MONTH='${key}';renderSummary()">ביטול</button>
+        <button class="btn-primary" onclick="saveMonthEdits('${key}')">💾 שמור</button>
+      </div>
+    </div>
+    <div class="st" style="margin-top:8px;">הכנסות — ניתן לעריכה</div>
+    <div id="edit-inc-rows">${rows||'<div style="color:#aaa;font-size:13px;padding:6px 0;">אין פריטים</div>'}</div>
+    <button class="btn-sec" style="margin-top:6px;font-size:11px;" onclick="addEditIncRow()">+ הוספת שורה</button>
+    <div class="dv"></div>
+    <div style="font-size:13px;color:#888;">הוצאות ששולמו: <strong>${fmt(m.expenses?.total||0)}</strong> ₪ (לא ניתן לעריכה כאן)</div>
+  `;
+}
+
+function addEditIncRow(){
+  const i=window._editRowCount++;
+  const div=document.createElement('div');
+  div.className='br';
+  div.style.gap='6px';
+  div.innerHTML=`<input type="text" id="edit-lbl-${i}" placeholder="תיאור" style="flex:1;min-width:0;border:1px solid #e0d8cc;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;">
+    <input type="number" id="edit-val-${i}" value="0" style="width:88px;border:1px solid #e0d8cc;border-radius:4px;padding:3px 7px;font-size:12px;">`;
+  document.getElementById('edit-inc-rows').appendChild(div);
+}
+
+function saveMonthEdits(key){
+  const m=getMonthEntry(key);
+  if(!m)return;
+  const newItems=[];
+  for(let i=0;i<window._editRowCount;i++){
+    const lbl=(document.getElementById('edit-lbl-'+i)?.value||'').trim();
+    const val=+(document.getElementById('edit-val-'+i)?.value||0);
+    if(lbl) newItems.push([lbl,val]);
+  }
+  const newTotal=newItems.reduce((s,x)=>s+x[1],0);
+  m.income={items:newItems,manual:[],total:newTotal};
+  m.net=newTotal-(m.expenses?.total||0);
+  MONTH_HISTORY=MONTH_HISTORY.map(x=>x.key===key?m:x);
+  saveMonthHistory(MONTH_HISTORY);
+  SELECTED_MONTH=key;
+  renderSummary();
 }
 
 function copyMonthSummary(key){
