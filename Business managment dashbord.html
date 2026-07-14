@@ -1244,20 +1244,19 @@ function renderExpenses(){
 
   // Group by cat
   const cats={};
-  fixed.forEach(e=>{if(!cats[e.cat])cats[e.cat]=[];cats[e.cat].push(e);});
+  activeFixed.forEach(e=>{if(!cats[e.cat])cats[e.cat]=[];cats[e.cat].push(e);});
   let html='';
   Object.entries(cats).forEach(([cat,items])=>{
     html+=`<div class="st" style="margin-top:8px;margin-bottom:4px;">${cat}</div>`;
     items.forEach(e=>{
-      const isDis=disabled.includes(e.name);
       const note=e.note?` <span style="font-size:10px;color:#b5770d;background:#fff8e1;padding:1px 5px;border-radius:3px;">${e.note}</span>`:'';
-      html+=`<div class="br" style="${isDis?'opacity:0.4;':''}">
+      html+=`<div class="br">
         <span>${e.name}${note}</span>
         <span style="display:flex;align-items:center;gap:7px;">
           <input type="number" value="${Math.round(e.amount)}" min="0"
             onchange="updateFixedAmount('${e.name.replace(/'/g,"\\'")}',+this.value)"
             style="width:75px;font-size:12px;font-weight:600;padding:2px 6px;border:1px solid #d4c9b8;border-radius:5px;text-align:center;">
-          <button onclick="toggleDis('nb_dis_fixed','${e.name.replace(/'/g,"\\'")}',this)" class="cbtn" style="font-size:10px;padding:1px 7px;">${isDis?'הפעל':'הסר'}</button>
+          <button onclick="removeFixed('${e.name.replace(/'/g,"\\'")}',${e._customId||'null'})" class="cbtn del" style="font-size:10px;padding:1px 7px;">הסר</button>
       </div>`;
     });
   });
@@ -1373,10 +1372,15 @@ function renderExpenses(){
   document.getElementById('exp-required-gross-note').textContent='כדי להישאר עם '+TGT.toLocaleString('he-IL')+' ₪ נטו';
 }
 
-function toggleDis(key,name,btn){
-  let d=loadDisabled(key);
-  if(d.includes(name))d=d.filter(x=>x!==name);else d.push(name);
-  saveDisabled(key,d);
+function removeFixed(name,customId){
+  if(customId){
+    FIXED_CUSTOM=FIXED_CUSTOM.filter(e=>e.id!==customId);
+    saveFixedCustom(FIXED_CUSTOM);
+  }else{
+    let d=loadDisabled('nb_dis_fixed');
+    if(!d.includes(name))d.push(name);
+    saveDisabled('nb_dis_fixed',d);
+  }
   renderExpenses();
 }
 function updateRate(v){USD_RATE=parseFloat(v)||3.1;localStorage.setItem('nb_usd_rate',USD_RATE);renderExpenses();}
